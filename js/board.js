@@ -20,7 +20,7 @@ class Board {
         for (let i = 0; i < rows; i++) {
             let row = []
             for (let j = 0; j < cols; j++) {
-                row.push([0, 0, 0, 0])
+                row.push([1, 1, 1, 1])
             }
             this.env.push(row)
         }
@@ -46,7 +46,7 @@ class Board {
         // First add walls on every individual cell
         this.env.forEach(row => {
             row.forEach(cell => {
-                for (let i = 0; i < cell.length; i++) cell[i] = 1
+                for (let i = 0; i < cell.length; i++) cell[i] = 0
             })
         })
 
@@ -68,16 +68,54 @@ class Board {
 
             // If new state is valid & that cell hasn't been visited yet
             if (this.inRange(newState) &&
-                arrEquals(this.env[newState[0]][newState[1]], [1, 1, 1, 1])) {
+                arrEquals(this.env[newState[0]][newState[1]], [0, 0, 0, 0])) {
 
                 // Break the "walls" to create a path
-                this.env[state[0]][state[1]][dir.index] = 0
-                this.env[newState[0]][newState[1]][dir.oppositeIndex] = 0
+                this.env[state[0]][state[1]][dir.index] = 1
+                this.env[newState[0]][newState[1]][dir.oppositeIndex] = 1
 
                 // Recursive call on the new cell
                 this.carve_passages(newState)
             }
         });
+    }
+
+    /**
+     * Gets value at location
+     * @param {Array} state     location to get value
+     * @returns {number}        value at state
+     */
+    getValue(state) { return this.env[state[0]][state[1]] }
+
+    /**
+     * Checks for a goal state
+     * @param {Array} state     location to check state [row, col]
+     * @returns {boolean}       true if state is a valid goal state
+     */
+    isGoal(state) { return arrEquals(this.goalState, state) }
+ 
+    /**
+     * Returns successors for a given state
+     * @param {Array} state     location to check successors [row, col]
+     * @returns {Array}         list of valid successors [successor, action, cost]
+     * 
+     * successor    resulting state [row, col]
+     * action       action required to get there ("n", "s", "e", "w")
+     * cost         cost to get there
+     */
+    successors(state) {
+        // Get the walls at a given state
+        let walls = this.getValue(state)
+
+        // Check each direction for valid successor
+        let successors = []
+        if (walls[0] && state[0] > 0)               successors.push([[state[0] - 1, state[1]], "n", 1])
+        if (walls[1] && state[0] < this.rows - 1)   successors.push([[state[0] + 1, state[1]], "s", 1])
+        if (walls[2] && state[1] < this.cols - 1)   successors.push([[state[0], state[1] + 1], "e", 1])
+        if (walls[3] && state[1] > 0)               successors.push([[state[0], state[1] - 1], "w", 1])
+
+        // Output
+        return successors 
     }
 
     /**
@@ -88,8 +126,8 @@ class Board {
         this.env.forEach((row, i) => {
             let rowStr = "|"
             row.forEach((cell, j) => {
-                rowStr += `${(cell[1] === 1 || i === this.rows - 1) ? "_" : " "}`
-                if (cell[2] === 1 || j === this.cols - 1){
+                rowStr += `${(cell[1] === 0 || i === this.rows - 1) ? "_" : " "}`
+                if (cell[2] === 0 || j === this.cols - 1){
                     rowStr += "|"
                 } else {
                     rowStr += `${(i === this.rows - 1) ? "_" : " "}`
@@ -109,10 +147,10 @@ class Board {
             row.forEach((cell, j) => {
 
                 output += "<td class=\""
-                if (cell[0])  output += "north "
-                if (cell[1])  output += "south "
-                if (cell[2])  output += "east "
-                if (cell[3])  output += "west "
+                if (!cell[0])  output += "north "
+                if (!cell[1])  output += "south "
+                if (!cell[2])  output += "east "
+                if (!cell[3])  output += "west "
                 output += "\">"
 
                 if (arrEquals(this.startState, [i, j])) output += `<div class="icon start-icon"></div>`
