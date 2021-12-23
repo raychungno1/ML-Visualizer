@@ -1,0 +1,80 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(45deg, #49a09d, #5f2c82);
+}
+
+.container {
+    width: 80%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.row {
+    display: flex;
+    gap: 2rem;
+}
+
+.btn {
+    display: block;
+    border: none;
+    padding: 1em;
+}
+
+.grid {
+    width: 100%;
+    max-height: 1200px;
+    margin: 5em auto;
+    border-collapse: collapse;
+    box-shadow: 0 0 20px rgba(0,0,0,0.25);
+    background-color: rgba(255,255,255,0.2);
+}
+
+.grid td {
+    width: 30px;
+    height: 30px;
+    border: none;
+    padding: 0;
+    border: 1.5px solid rgba(85, 96, 143, 0.5);
+    position: relative;
+}
+
+.grid td.north {
+    border-top: 3px solid black;
+}
+.grid td.south {
+    border-bottom: 3px solid black;
+}
+.grid td.east {
+    border-right: 3px solid black;
+}
+.grid td.west {
+    border-left: 3px solid black;
+}
+
+.icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    border-radius: 100px;
+}
+
+.start-icon {
+    background: red;
+}
+
+.goal-icon {
+    background: green;
+}
+
+.buttons {
+    margin: 0 auto;
+    justify-content: center;
+}

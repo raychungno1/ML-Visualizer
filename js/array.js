@@ -3,7 +3,7 @@
  * @param {Array} array 
  * @returns a shuffled array
  */
-function shuffle(array) {
+function arrShuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
@@ -15,11 +15,11 @@ function shuffle(array) {
  * Checks the equality of 2 arrays
  * @returns true if the array elements are equal
  */
-function equals(a, b) {
+function arrEquals(a, b) {
     return Array.isArray(a) &&
         Array.isArray(b) &&
         a.length === b.length &&
         a.every((val, index) => val === b[index]);
 }
 
-export { shuffle, equals }
+export { arrShuffle, arrEquals }
