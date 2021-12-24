@@ -1,42 +1,46 @@
+import { arrShuffle, arrEquals, cellEquals } from "./array.js"
 import { Directions } from "./directions.js"
-import { arrShuffle, arrEquals } from "./array.js"
+import { Grid } from "./grid.js"
 
 class Board {
 
     /**
-     * Initializes an environment with a set size, start state, and goal state
+     * Initializes an board with a set size, start state, and goal state
      * @param {number} rows         environment height
      * @param {number} columns      environment width
      * @param {State} startState    location of start state
      * @param {State} goalState     location of goal state
+     * 
+     * Each cell in the board is an object with the format:
+     * {
+     *  n: cost to north cell,
+     *  s: cost to south cell,
+     *  e: cost to east cell,
+     *  w: cost to west cell
+     * }
+     * A cost of 0 implies a wall in that direction)
      */
-    constructor(rows, cols, startState = [0, 0], goalState = [rows - 1, cols - 1]) {
+    constructor(rows, cols, startState = null, goalState = null) {
         // Save dimensions
         this.rows = rows
         this.cols = cols
          
         // Initialize playing field (a 2d array)
-        this.env = []
-        for (let i = 0; i < rows; i++) {
-            let row = []
-            for (let j = 0; j < cols; j++) {
-                row.push([1, 1, 1, 1])
-            }
-            this.env.push(row)
-        }
+        this.grid = new Grid(rows, cols, {n: 1, s: 1, e: 1, w: 1})
+
         // Initialize startState & goalState
-        this.startState = startState
-        this.goalState = goalState
+        this.startState = startState ? startState : [Math.floor(rows/2), Math.floor(cols / 5) - 1]
+        this.goalState = goalState ? goalState : [Math.floor(rows/2), cols - Math.floor(cols / 5)]
     }
 
     /**
      * Checks if a state [row, col] is a valid position on the board
      * @returns true if the state is valid
      */
-    inRange(state) {
+    inRange(row, col) {
         // Compares state to dimensions
-        return 0 <= state[0] && state[0] < this.rows &&
-            0 <= state[1] && state[1] < this.cols
+        return 0 <= row && row < this.rows &&
+            0 <= col && col < this.cols
     }
 
     /**
@@ -44,11 +48,7 @@ class Board {
      */
     generateMaze() {
         // First add walls on every individual cell
-        this.env.forEach(row => {
-            row.forEach(cell => {
-                for (let i = 0; i < cell.length; i++) cell[i] = 0
-            })
-        })
+        this.grid = new Grid(this.rows, this.cols, {n: 0, s: 0, e: 0, w: 0})
 
         // Then carve out the maze recursively
         this.carve_passages(this.startState)
@@ -63,29 +63,29 @@ class Board {
         arrShuffle(["n", "s", "e", "w"]).forEach(element => {
 
             // Get the associated direction & state
-            const dir = Directions[element]
-            const newState = dir.update(state)
+            const d = Directions[element]
+            const newState = d.update(state)
 
             // If new state is valid & that cell hasn't been visited yet
-            if (this.inRange(newState) &&
-                arrEquals(this.env[newState[0]][newState[1]], [0, 0, 0, 0])) {
+            if (this.inRange(...newState) &&
+                cellEquals(this.grid.get(...newState), 0, 0, 0, 0)) {
 
                 // Break the "walls" to create a path
-                this.env[state[0]][state[1]][dir.index] = 1
-                this.env[newState[0]][newState[1]][dir.oppositeIndex] = 1
+                this.grid.get(...state)[d.dir] = 1
+                this.grid.get(...newState)[d.opposite] = 1
 
                 // Recursive call on the new cell
                 this.carve_passages(newState)
             }
-        });
+        })
     }
 
-    /**
-     * Gets value at location
-     * @param {Array} state     location to get value
-     * @returns {number}        value at state
-     */
-    getValue(state) { return this.env[state[0]][state[1]] }
+    // /**
+    //  * Gets value at location
+    //  * @param {Array} state     location to get value
+    //  * @returns {number}        value at state
+    //  */
+    // getValue(state) { return this.grid.get(...state) }
 
     /**
      * Checks for a goal state
@@ -105,14 +105,14 @@ class Board {
      */
     successors(state) {
         // Get the walls at a given state
-        let walls = this.getValue(state)
+        let walls = this.grid.get(...state)
 
         // Check each direction for valid successor
         let successors = []
-        if (walls[0] && state[0] > 0)               successors.push([[state[0] - 1, state[1]], "n", 1])
-        if (walls[1] && state[0] < this.rows - 1)   successors.push([[state[0] + 1, state[1]], "s", 1])
-        if (walls[2] && state[1] < this.cols - 1)   successors.push([[state[0], state[1] + 1], "e", 1])
-        if (walls[3] && state[1] > 0)               successors.push([[state[0], state[1] - 1], "w", 1])
+        if (walls.n && state[0] > 0)               successors.push([[state[0] - 1, state[1]], "n", walls.n])
+        if (walls.s && state[0] < this.rows - 1)   successors.push([[state[0] + 1, state[1]], "s", walls.s])
+        if (walls.e && state[1] < this.cols - 1)   successors.push([[state[0], state[1] + 1], "e", walls.e])
+        if (walls.w && state[1] > 0)               successors.push([[state[0], state[1] - 1], "w", walls.w])
 
         // Output
         return successors 
@@ -123,11 +123,11 @@ class Board {
      */
     print() {
         console.log(" " + "_".repeat(this.cols * 2 - 1))
-        this.env.forEach((row, i) => {
+        this.grid.arr.forEach((row, i) => {
             let rowStr = "|"
             row.forEach((cell, j) => {
-                rowStr += `${(cell[1] === 0 || i === this.rows - 1) ? "_" : " "}`
-                if (cell[2] === 0 || j === this.cols - 1){
+                rowStr += `${(!cell.s || i === this.rows - 1) ? "_" : " "}`
+                if (!cell.e || j === this.cols - 1){
                     rowStr += "|"
                 } else {
                     rowStr += `${(i === this.rows - 1) ? "_" : " "}`
@@ -137,20 +137,18 @@ class Board {
         })
     }
 
-    /**
-     * Returns an HTML formatted representation of the board
-     */
+    /** Renders the board onto the webpage */
     renderGrid(grid) {
         let output = ""
-        this.env.forEach((row, i) => {
+        this.grid.arr.forEach((row, i) => {
             output += "<tr>"
             row.forEach((cell, j) => {
 
                 output += "<td class=\""
-                if (!cell[0] || i === 0)                output += "north "
-                if (!cell[1] || i === this.rows - 1)    output += "south "
-                if (!cell[2] || j === this.cols - 1)    output += "east "
-                if (!cell[3] || j === 0)                output += "west "
+                if (!cell.n || i === 0)                output += "north "
+                if (!cell.s || i === this.rows - 1)    output += "south "
+                if (!cell.e || j === this.cols - 1)    output += "east "
+                if (!cell.w || j === 0)                output += "west "
                 output += `" id="r${i}c${j}">`
                 if (arrEquals(this.startState, [i, j])) output += `<div class="icon start-icon"></div>`
                 if (arrEquals(this.goalState, [i, j])) output += `<div class="icon goal-icon"></div>`
@@ -161,14 +159,15 @@ class Board {
         grid.innerHTML = output
     }
 
-    static addClass(grid, path, costs, expansion, nodeCount, totalCost, start, i) {
+    /** Renders the solution path onto the webpage (without animations) */
+    static staticPath(grid, directions, costs, expansion, nodeCount, totalCost, start, i) {
         if (i < expansion.length) {
             let [row, col] = expansion[i]
             grid.rows[row].cells[col].classList.add("expansion")
         } else if (i === expansion.length) {
             grid.rows[start[0]].cells[start[1]].classList.add("solution")
         } else {
-            [start[0], start[1]] = Directions[path[i-expansion.length-1]].update(start)
+            [start[0], start[1]] = Directions[directions[i-expansion.length-1]].update(start)
             grid.rows[start[0]].cells[start[1]].classList.add("solution")
         }
 
@@ -180,7 +179,8 @@ class Board {
         nodeCount.textContent = `Nodes Searched: ${expansion.length - 1}`
     }
 
-    static animateClass(grid, path, costs, expansion, nodeCount, totalCost, start, i) {
+    /** Renders the solution path onto the webpage (with animations) */
+    static animatePath(grid, directions, costs, expansion, nodeCount, totalCost, start, i) {
         if (i < expansion.length) {
             let [row, col] = expansion[i]
             gsap.fromTo(`#r${row}c${col}`, {scale: 0}, {scale: 1, backgroundColor: "rgba(255, 128, 128, .5)", duration: 1, ease: "elastic.out(1, 1)"})
@@ -193,7 +193,7 @@ class Board {
             tl.fromTo(`#r${row}c${col}`, {scale: 1}, {scale: .5})
             tl.fromTo(`#r${row}c${col}`, {scale: .5, backgroundColor: "rgba(255, 128, 128, .5)"}, {scale: 1, backgroundColor: "rgba(255, 0, 0, .5)", duration: 1, ease: "elastic.out(1, 0.5)"}, "<15%")
         } else {
-            [start[0], start[1]] = Directions[path[i-expansion.length-1]].update(start)
+            [start[0], start[1]] = Directions[directions[i-expansion.length-1]].update(start)
             let [row, col] = start
             const tl = gsap.timeline({defaults: {duration: 1, ease: "power4.out"}})
             tl.fromTo(`#r${row}c${col}`, {scale: 1}, {scale: .5})
@@ -210,15 +210,16 @@ class Board {
         }
     }
 
-    renderPath(grid, path, costs, expansion, nodeCount, totalCost, animate=false, duration=2000) {
+    /** Wrapper function to render the solution path */
+    renderPath(grid, directions, costs, expansion, nodeCount, totalCost, animate=false, duration=2000) {
         let start = [...this.startState]
-        for (let i = 0; i <= expansion.length + path.length; i++) {
+        for (let i = 0; i <= expansion.length + directions.length; i++) {
             if (animate) {
                 setTimeout(function () {
-                    Board.animateClass(grid, path, costs, expansion, nodeCount, totalCost, start, i)
-                }, 10 * i /*/ (expansion.length + path.length)*/);
+                    Board.animatePath(grid, directions, costs, expansion, nodeCount, totalCost, start, i)
+                }, 10 * i);
             } else {
-                Board.addClass(grid, path, costs, expansion, nodeCount, totalCost, start, i)
+                Board.staticPath(grid, directions, costs, expansion, nodeCount, totalCost, start, i)
             }
         }
     }

@@ -9,6 +9,8 @@ const clear = document.getElementById("clear-btn")
 const bfsBtn = document.getElementById("bfs-btn")
 const dfsBtn = document.getElementById("dfs-btn")
 const ucsBtn = document.getElementById("ucs-btn")
+const greedyBtn = document.getElementById("greedy-btn")
+const aStarBtn = document.getElementById("a-star-btn")
 
 const algType = document.getElementById("alg-type")
 const nodeCountTxt = document.getElementById("node-count")
@@ -49,6 +51,16 @@ dfsBtn.addEventListener("click", function() {
 ucsBtn.addEventListener("click", function() {
     const [directions, totalCost, expansion] = Search.UCS(b)
     renderResult("UCS", totalCost, directions, expansion, true)
+})
+
+greedyBtn.addEventListener("click", function() {
+    const [directions, totalCost, expansion] = Search.greedy(b)
+    renderResult("Greedy", totalCost, directions, expansion, true)
+})
+
+aStarBtn.addEventListener("click", function() {
+    const [directions, totalCost, expansion] = Search.aStar(b)
+    renderResult("A*", totalCost, directions, expansion, true)
 })
 
 function renderResult(alg, costs, directions, expansion, animate = false) {

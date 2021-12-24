@@ -1,107 +1,140 @@
-import { Board } from "./board.js"
 import { Queue, Stack, KV, MinHeap } from "./dataStructs.js"
+import { arrEquals } from "./array.js"
 
 class Search {
+    
     static BFS(board) {
-        let visited = [] // Array to track visited nodes
-        let expansion = []
-        for (let i = 0; i < board.rows; i++) { visited.push(new Array(board.cols).fill(0)) }
+        let expansion = [] // Array to track expanded nodes
+        let queue = new Queue([[board.startState, [], []]]) // Queue of nodes to expand
+        
+        while (queue.size > 0) { // While queue still has elements
+            let [state, directions, totalCost] = queue.remove() // Remove a node from the queue
+            
+            // If the if the node hasnt been visited
+            if (!expansion.find(element => arrEquals(element, state))) {
+                expansion.push(state) // Mark it as visited
 
-        let [startRow, startCol] = board.startState
-        visited[startRow][startCol] = 1
-        expansion.push(board.startState)
+                // If goal is found, return the directions
+                if (board.isGoal(state)) return [directions, totalCost, expansion]
 
-        // While queue still has elements
-        let queue = new Queue([[board.startState, [], []]])
-        while (queue.size > 0) {
-
-            let [state, directions, totalCost] = queue.remove() // Remove a state from the queue
-            expansion.push(state)
-
-            if (board.isGoal(state)) { // If goal is found, return the directions
-                return [directions, totalCost, expansion]
-            } 
-
-            // Othwise, loop through each successor
-            board.successors(state).forEach(([sState, sDir, sCost]) => {
-
-                let [row, col] = sState
-                // And add it to the queue if it hasn't been visited yet
-                if (!visited[row][col]) {
-                    visited[row][col] = 1 // Mark the state as visited
+                // Othwise, add each successor to the queue
+                board.successors(state).forEach(([sState, sDir, sCost]) => {
                     queue.insert([sState, [...directions, sDir], [...totalCost, sCost]])
-                }
-            })
+                })
+            }
         }
     }
 
     static DFS(board) {
-        let visited = [] // Array to track visited nodes
-        let expansion = []
-        for (let i = 0; i < board.rows; i++) { visited.push(new Array(board.cols).fill(0)) }
+        let expansion = [] // Array to track expanded nodes
+        let stack = new Stack([[board.startState, [], []]]) // stack of nodes to expand
 
-        let [startRow, startCol] = board.startState
-        visited[startRow][startCol] = 1
-        expansion.push(board.startState)
+        while (stack.size > 0) { // While stack still has elements
+            let [state, directions, totalCost] = stack.remove() // Remove a node from the stack
+            
+            // If the if the node hasnt been visited
+            if (!expansion.find(element => arrEquals(element, state))) {
+                expansion.push(state) // Mark it as visited
 
-        // While stack still has elements
-        let stack = new Stack([[board.startState, [], []]])
-        while (stack.size > 0) {
+                // If goal is found, return the directions
+                if (board.isGoal(state)) return [directions, totalCost, expansion]
 
-            let [state, directions, totalCost] = stack.remove() // Remove a state from the stack
-            expansion.push(state)
-
-            if (board.isGoal(state)) { // If goal is found, return the directions
-                return [directions, totalCost, expansion]
-            } 
-
-            // Othwise, loop through each successor
-            board.successors(state).forEach(([sState, sDir, sCost]) => {
-
-                let [row, col] = sState
-                // And add it to the stack if it hasn't been visited yet
-                if (!visited[row][col]) {
-                    visited[row][col] = 1 // Mark the state as visited
+                // Othwise, add each successor to the stack
+                board.successors(state).forEach(([sState, sDir, sCost]) => {
                     stack.insert([sState, [...directions, sDir], [...totalCost, sCost]])
-                }
-            })
+                })
+            }
         }
     }
 
     static UCS(board) {
-        let visited = [] // Array to track visited nodes
-        let expansion = []
-        for (let i = 0; i < board.rows; i++) { visited.push(new Array(board.cols).fill(0)) }
+        let expansion = [] // Array to track expanded nodes
+        let heap = new MinHeap([new KV(0, 0, [board.startState, [], []])]) // heap of nodes to expand
+        
+        while (heap.size > 0) { // While heap still has elements
+            let {cost, depth, value: [state, directions, totalCost]} = heap.remove() // Remove a state from the heap
 
-        let [startRow, startCol] = board.startState
-        visited[startRow][startCol] = 1
-        expansion.push(board.startState)
+            // If the if the node hasnt been visited
+            if (!expansion.find(element => arrEquals(element, state))) {
+                expansion.push(state) // Mark it as visited
 
-        // While heap still has elements
-        let heap = new MinHeap([new KV(0, 0, [board.startState, [], []])])
-        while (heap.size > 0) {
+                // If goal is found, return the directions
+                if (board.isGoal(state)) return [directions, totalCost, expansion]
 
-            let node = heap.remove()
-            let [state, directions, totalCost] = node.value // Remove a state from the heap
-            expansion.push(state)
-            
-            if (board.isGoal(state)) { // If goal is found, return the directions
-                return [directions, totalCost, expansion]
+                // Othwise, add each successor to the stack
+                board.successors(state).forEach(([sState, sDir, sCost]) => {
+                    heap.insert(new KV(cost + sCost, depth + 1, [sState, [...directions, sDir], [...totalCost, sCost]]))
+                })
             }
-
-            // Othwise, loop through each successor
-            board.successors(state).forEach(([sState, sDir, sCost]) => {
-
-                let [row, col] = sState
-                // And add it to the heap if it hasn't been visited yet
-                if (!visited[row][col]) {
-                    visited[row][col] = 1 // Mark the state as visited
-                    heap.insert(new KV(sCost, node.depth + 1, [sState, [...directions, sDir], [...totalCost, sCost]]))
-                }
-            })
         }
+    }
+
+    static greedy(board) {
+        let expansion = [] // Array to track expanded nodes
+        let goal = board.goalState // Goal state
+        let heap = new MinHeap([new KV(
+            Search.heuristic(board.startState, goal),
+            0,
+            [board.startState, [], []]
+        )]) // heap of nodes to expand
+        
+        while (heap.size > 0) { // While heap still has elements
+            let {depth, value: [state, directions, totalCost]} = heap.remove() // Remove a state from the heap
+
+            // If the if the node hasnt been visited
+            if (!expansion.find(element => arrEquals(element, state))) {
+                expansion.push(state) // Mark it as visited
+
+                // If goal is found, return the directions
+                if (board.isGoal(state)) return [directions, totalCost, expansion]
+
+                // Othwise, add each successor to the stack
+                board.successors(state).forEach(([sState, sDir, sCost]) => {
+                    heap.insert(new KV(
+                        Search.heuristic(sState, goal),
+                        depth + 1,
+                        [sState, [...directions, sDir], [...totalCost, sCost]]
+                    ))
+                })
+            }
+        }
+    }
+
+    static aStar(board) {
+        let expansion = [] // Array to track expanded nodes
+        let goal = board.goalState // Goal state
+        let heap = new MinHeap([new KV(
+            Search.heuristic(board.startState, goal),
+            0,
+            [board.startState, [], []]
+        )]) // heap of nodes to expand
+        
+        while (heap.size > 0) { // While heap still has elements
+            let {cost, depth, value: [state, directions, totalCost]} = heap.remove() // Remove a state from the heap
+
+            // If the if the node hasnt been visited
+            if (!expansion.find(element => arrEquals(element, state))) {
+                expansion.push(state) // Mark it as visited
+
+                // If goal is found, return the directions
+                if (board.isGoal(state)) return [directions, totalCost, expansion]
+
+                // Othwise, add each successor to the stack
+                board.successors(state).forEach(([sState, sDir, sCost]) => {
+                    heap.insert(new KV(
+                        cost + sCost + Search.heuristic(sState, goal),
+                        depth + 1,
+                        [sState, [...directions, sDir], [...totalCost, sCost]]
+                    ))
+                })
+            }
+        }
+    }
+    
+    /** Uses manhattan distance as a heuristic */
+    static heuristic(state, goalState) {
+        return Math.abs(state[0] - goalState[0]) + Math.abs(state[1] - goalState[1])
     }
 }
 
 export { Search }
-

@@ -22,4 +22,11 @@ function arrEquals(a, b) {
         a.every((val, index) => val === b[index]);
 }
 
-export { arrShuffle, arrEquals }
+function cellEquals(a, north, south, east, west) {
+    return a.n === north &&
+        a.s === south &&
+        a.e === east &&
+        a.w === west
+}
+
+export { arrShuffle, arrEquals, cellEquals }

@@ -7,26 +7,26 @@ class Directions {
      *      3. function that returns a state [row, col] in that direction
      */
     static n = {
-        index: 0,
-        oppositeIndex: 1,
+        dir: "n",
+        opposite: "s",
         update: function north(state) { return [state[0] - 1, state[1]] }
     }
 
     static s = {
-        index: 1,
-        oppositeIndex: 0,
+        dir: "s",
+        opposite: "n",
         update: function south(state) { return [state[0] + 1, state[1]] }
     }
 
     static e = {
-        index: 2,
-        oppositeIndex: 3,
+        dir: "e",
+        opposite: "w",
         update: function east(state) { return [state[0], state[1] + 1] }
     }
 
     static w = {
-        index: 3,
-        oppositeIndex: 2,
+        dir: "w",
+        opposite: "e",
         update: function west(state) { return [state[0], state[1] - 1] }
     }
 }
