@@ -147,10 +147,10 @@ class Board {
             row.forEach((cell, j) => {
 
                 output += "<td class=\""
-                if (!cell[0])  output += "north "
-                if (!cell[1])  output += "south "
-                if (!cell[2])  output += "east "
-                if (!cell[3])  output += "west "
+                if (!cell[0] || i === 0)                output += "north "
+                if (!cell[1] || i === this.rows - 1)    output += "south "
+                if (!cell[2] || j === this.cols - 1)    output += "east "
+                if (!cell[3] || j === 0)                output += "west "
                 output += "\">"
 
                 if (arrEquals(this.startState, [i, j])) output += `<div class="icon start-icon"></div>`
