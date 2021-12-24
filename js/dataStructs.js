@@ -1,34 +1,47 @@
 class Queue {
     constructor(array=[]) {
-        this.length = array.length
+        this.size = array.length
         this.queue = [...array]
     }
 
     insert(x) {
-        this.length++
+        this.size++
         this.queue.push(x)
     }
 
     remove() {
-        this.length--
+        this.size--
         return this.queue.shift()
     }
 }
 
 class Stack {
     constructor(array=[]) {
-        this.length = array.length
+        this.size = array.length
         this.stack = [...array]
     }
 
     insert(x) {
-        this.length++
+        this.size++
         this.stack.unshift(x)
     }
 
     remove() {
-        this.length--
+        this.size--
         return this.stack.shift()
+    }
+}
+
+class KV {
+    constructor(cost, depth, value) {
+        this.cost = cost
+        this.depth = depth
+        this.value = value
+    }
+
+    lessThan(x) {
+        // First compare by cost        // Then commpare by depth
+        return (this.cost < x.cost) || (this.cost === x.cost && this.depth < x.depth)
     }
 }
 
@@ -44,8 +57,8 @@ class MinHeap {
         let i = this.size
         this.heap.push(x)
 
-        // While the parent node is larger, swap it with the current one
-        while (i > 0 && (this.heap[MinHeap.parent(i)][0] > this.heap[i][0])) {
+        // While the current node is smaller, swap it with its parent
+        while (i > 0 && this.heap[i].lessThan(this.heap[MinHeap.parent(i)])) {
             [this.heap[i], this.heap[MinHeap.parent(i)]] = [this.heap[MinHeap.parent(i)], this.heap[i]]
             i = MinHeap.parent(i)
         }
@@ -83,10 +96,13 @@ class MinHeap {
         let done = false
 
         do {
-            // Find min between the root, its left & its right child
             let smallest = index
-            if (MinHeap.leftChild(index) < arr.length && (arr[MinHeap.leftChild(index)][0] < arr[smallest][0])) smallest = MinHeap.leftChild(index)
-            if (MinHeap.rightChild(index) < arr.length && (arr[MinHeap.rightChild(index)][0] < arr[smallest][0])) smallest = MinHeap.rightChild(index)
+            let left = MinHeap.leftChild(index)
+            let right = MinHeap.rightChild(index)
+            
+            // Find min between the root, its left & its right child
+            if (left < arr.length && arr[left].lessThan(arr[smallest])) smallest = left
+            if (right < arr.length && arr[right].lessThan(arr[smallest])) smallest = right
 
             // Swap the root with that smallest value (from above)
             if (index !== smallest) {
@@ -106,4 +122,4 @@ class MinHeap {
     }
 }
 
-export { Queue, Stack, MinHeap }
+export { Queue, Stack, KV, MinHeap }

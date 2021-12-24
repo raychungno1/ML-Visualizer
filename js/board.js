@@ -60,7 +60,7 @@ class Board {
      */
     carve_passages(state) {
         // For each direction (randomly chosen)
-        arrShuffle(["N", "S", "E", "W"]).forEach(element => {
+        arrShuffle(["n", "s", "e", "w"]).forEach(element => {
 
             // Get the associated direction & state
             const dir = Directions[element]
@@ -140,7 +140,7 @@ class Board {
     /**
      * Returns an HTML formatted representation of the board
      */
-    HTML(grid) {
+    renderGrid(grid) {
         let output = ""
         this.env.forEach((row, i) => {
             output += "<tr>"
@@ -151,8 +151,7 @@ class Board {
                 if (!cell[1] || i === this.rows - 1)    output += "south "
                 if (!cell[2] || j === this.cols - 1)    output += "east "
                 if (!cell[3] || j === 0)                output += "west "
-                output += "\">"
-
+                output += `" id="r${i}c${j}">`
                 if (arrEquals(this.startState, [i, j])) output += `<div class="icon start-icon"></div>`
                 if (arrEquals(this.goalState, [i, j])) output += `<div class="icon goal-icon"></div>`
                 output += "</td>"
@@ -162,41 +161,67 @@ class Board {
         grid.innerHTML = output
     }
 
-    // animateWalls(grid) {
-    //     let startState = this.startState
-    //     let goalState = this.goalState
-    //     grid.innerHTML = `<tr>${"<td></td>".repeat(this.cols)}</tr>`.repeat(this.rows)
-    //     this.env.forEach((row, i) => {
-    //         (function (i) { setTimeout(function () {
-    //             row.forEach((cell, j) => {
-    //                 (function (j) { setTimeout(function () {
-    //                     let gridCell = grid.rows[i].cells[j]
-    //                     if (cell[0]) {
-    //                         // Board.borderAnimation(gridCell, "Top")
-    //                         gridCell.classList.add("north")
-    //                     }
-    //                     if (cell[1]) {
-    //                         gridCell.classList.add("south")
-    //                         // Board.borderAnimation(gridCell, "Bottom")
-    //                     }
-    //                     if (cell[2]) {
-    //                         gridCell.classList.add("east")
-    //                         // Board.borderAnimation(gridCell, "Right")
-    //                     }
-    //                     if (cell[3]) {
-    //                         gridCell.classList.add("west")
-    //                         // Board.borderAnimation(gridCell, "Left")
-    //                     }
-    //                     if (arrEquals(startState, [i, j])) {
-    //                         console.log("start")
-    //                         gridCell.innerHTML = `<div class="start-icon"></div>`
-    //                     } 
-    //                     if (arrEquals(goalState, [i, j])) gridCell.innerHTML = `<div class="goal-icon"></div>`
-    //                 }, (5 * j)); })(j);
-    //             })
-    //         }, (5 * i)); })(i);
-    //     })    
-    // }
+    static addClass(grid, path, costs, expansion, nodeCount, totalCost, start, i) {
+        if (i < expansion.length) {
+            let [row, col] = expansion[i]
+            grid.rows[row].cells[col].classList.add("expansion")
+        } else if (i === expansion.length) {
+            grid.rows[start[0]].cells[start[1]].classList.add("solution")
+        } else {
+            [start[0], start[1]] = Directions[path[i-expansion.length-1]].update(start)
+            grid.rows[start[0]].cells[start[1]].classList.add("solution")
+        }
+
+        let cost = 0
+        for (let k = 0; k < costs.length; k++) {
+            cost += costs[k]
+        }
+        totalCost.textContent = `Cost: ${cost}`
+        nodeCount.textContent = `Nodes Searched: ${expansion.length - 1}`
+    }
+
+    static animateClass(grid, path, costs, expansion, nodeCount, totalCost, start, i) {
+        if (i < expansion.length) {
+            let [row, col] = expansion[i]
+            gsap.fromTo(`#r${row}c${col}`, {scale: 0}, {scale: 1, backgroundColor: "rgba(255, 128, 128, .5)", duration: 1, ease: "elastic.out(1, 1)"})
+            
+            totalCost.textContent = `Cost: 0`
+            nodeCount.textContent = `Nodes Searched: ${i}`
+        } else if (i === expansion.length) {
+            let [row, col] = start
+            const tl = gsap.timeline({defaults: {duration: 1, ease: "power4.out"}})
+            tl.fromTo(`#r${row}c${col}`, {scale: 1}, {scale: .5})
+            tl.fromTo(`#r${row}c${col}`, {scale: .5, backgroundColor: "rgba(255, 128, 128, .5)"}, {scale: 1, backgroundColor: "rgba(255, 0, 0, .5)", duration: 1, ease: "elastic.out(1, 0.5)"}, "<15%")
+        } else {
+            [start[0], start[1]] = Directions[path[i-expansion.length-1]].update(start)
+            let [row, col] = start
+            const tl = gsap.timeline({defaults: {duration: 1, ease: "power4.out"}})
+            tl.fromTo(`#r${row}c${col}`, {scale: 1}, {scale: .5})
+            tl.fromTo(`#r${row}c${col}`, {scale: .5, backgroundColor: "rgba(255, 128, 128, .5)"}, {scale: 1, backgroundColor: "rgba(255, 0, 0, .5)", duration: 1, ease: "elastic.out(1, 0.5)"}, "<15%")
+
+            let cost = 0
+            for (let k = 0; k < i-expansion.length; k++) {
+                cost += costs[k]
+            }
+            setTimeout(() => {
+                totalCost.textContent = `Cost: ${cost}`
+            }, (i-expansion.length))
+
+        }
+    }
+
+    renderPath(grid, path, costs, expansion, nodeCount, totalCost, animate=false, duration=2000) {
+        let start = [...this.startState]
+        for (let i = 0; i <= expansion.length + path.length; i++) {
+            if (animate) {
+                setTimeout(function () {
+                    Board.animateClass(grid, path, costs, expansion, nodeCount, totalCost, start, i)
+                }, 10 * i /*/ (expansion.length + path.length)*/);
+            } else {
+                Board.addClass(grid, path, costs, expansion, nodeCount, totalCost, start, i)
+            }
+        }
+    }
 }
 
 export { Board }

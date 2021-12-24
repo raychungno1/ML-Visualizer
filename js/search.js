@@ -1,32 +1,35 @@
 import { Board } from "./board.js"
-import { Queue, Stack, MinHeap } from "./dataStructs.js"
+import { Queue, Stack, KV, MinHeap } from "./dataStructs.js"
 
 class Search {
     static BFS(board) {
         let visited = [] // Array to track visited nodes
-        let numVisited = 0
+        let expansion = []
         for (let i = 0; i < board.rows; i++) { visited.push(new Array(board.cols).fill(0)) }
-        visited[board.startState[0]][board.startState[1]] = 1
+
+        let [startRow, startCol] = board.startState
+        visited[startRow][startCol] = 1
+        expansion.push(board.startState)
 
         // While queue still has elements
-        let queue = new Queue([[board.startState, "", 0]])
-        while (queue.length > 0) {
+        let queue = new Queue([[board.startState, [], []]])
+        while (queue.size > 0) {
 
-            let [state, directions, cost] = queue.remove() // Remove a state from the queue
-            numVisited++
+            let [state, directions, totalCost] = queue.remove() // Remove a state from the queue
+            expansion.push(state)
 
             if (board.isGoal(state)) { // If goal is found, return the directions
-                console.log(numVisited)
-                return directions.split("")
+                return [directions, totalCost, expansion]
             } 
 
             // Othwise, loop through each successor
-            board.successors(state).forEach(successor => {
+            board.successors(state).forEach(([sState, sDir, sCost]) => {
 
+                let [row, col] = sState
                 // And add it to the queue if it hasn't been visited yet
-                if (!visited[successor[0][0]][successor[0][1]]) {
-                    visited[successor[0][0]][successor[0][1]] = 1 // Mark the state as visited
-                    queue.insert([successor[0], directions + successor[1], successor[2]])
+                if (!visited[row][col]) {
+                    visited[row][col] = 1 // Mark the state as visited
+                    queue.insert([sState, [...directions, sDir], [...totalCost, sCost]])
                 }
             })
         }
@@ -34,30 +37,32 @@ class Search {
 
     static DFS(board) {
         let visited = [] // Array to track visited nodes
-        let numVisited = 0
+        let expansion = []
         for (let i = 0; i < board.rows; i++) { visited.push(new Array(board.cols).fill(0)) }
-        visited[board.startState[0]][board.startState[1]] = 1
 
-        // While queue still has elements
-        let stack = new Stack([[board.startState, "", 0]])
-        while (stack.length > 0) {
+        let [startRow, startCol] = board.startState
+        visited[startRow][startCol] = 1
+        expansion.push(board.startState)
 
-            let [state, directions, cost] = stack.remove() // Remove a state from the queue
-            numVisited++
+        // While stack still has elements
+        let stack = new Stack([[board.startState, [], []]])
+        while (stack.size > 0) {
 
-            
+            let [state, directions, totalCost] = stack.remove() // Remove a state from the stack
+            expansion.push(state)
+
             if (board.isGoal(state)) { // If goal is found, return the directions
-                console.log(numVisited)
-                return directions.split("")
+                return [directions, totalCost, expansion]
             } 
-            
+
             // Othwise, loop through each successor
-            board.successors(state).forEach(successor => {
-                
-                // And add it to the queue if it hasn't been visited yet
-                if (!visited[successor[0][0]][successor[0][1]]) {
-                    visited[successor[0][0]][successor[0][1]] = 1 // Mark the state as visited
-                    stack.insert([successor[0], directions + successor[1], successor[2]])
+            board.successors(state).forEach(([sState, sDir, sCost]) => {
+
+                let [row, col] = sState
+                // And add it to the stack if it hasn't been visited yet
+                if (!visited[row][col]) {
+                    visited[row][col] = 1 // Mark the state as visited
+                    stack.insert([sState, [...directions, sDir], [...totalCost, sCost]])
                 }
             })
         }
@@ -65,29 +70,33 @@ class Search {
 
     static UCS(board) {
         let visited = [] // Array to track visited nodes
-        let numVisited = 0
+        let expansion = []
         for (let i = 0; i < board.rows; i++) { visited.push(new Array(board.cols).fill(0)) }
-        visited[board.startState[0]][board.startState[1]] = 1
 
-        // While queue still has elements
-        let heap = new MinHeap([[0, [board.startState, "", 0]]])
+        let [startRow, startCol] = board.startState
+        visited[startRow][startCol] = 1
+        expansion.push(board.startState)
+
+        // While heap still has elements
+        let heap = new MinHeap([new KV(0, 0, [board.startState, [], []])])
         while (heap.size > 0) {
 
-            let [state, directions, cost] = heap.remove()[1] // Remove a state from the queue
-            numVisited++
-
+            let node = heap.remove()
+            let [state, directions, totalCost] = node.value // Remove a state from the heap
+            expansion.push(state)
+            
             if (board.isGoal(state)) { // If goal is found, return the directions
-                console.log(numVisited)
-                return directions.split("")
-            } 
+                return [directions, totalCost, expansion]
+            }
 
             // Othwise, loop through each successor
-            board.successors(state).forEach(successor => {
+            board.successors(state).forEach(([sState, sDir, sCost]) => {
 
-                // And add it to the queue if it hasn't been visited yet
-                if (!visited[successor[0][0]][successor[0][1]]) {
-                    visited[successor[0][0]][successor[0][1]] = 1 // Mark the state as visited
-                    heap.insert([successor[2], [successor[0], directions + successor[1], successor[2]]])
+                let [row, col] = sState
+                // And add it to the heap if it hasn't been visited yet
+                if (!visited[row][col]) {
+                    visited[row][col] = 1 // Mark the state as visited
+                    heap.insert(new KV(sCost, node.depth + 1, [sState, [...directions, sDir], [...totalCost, sCost]]))
                 }
             })
         }
@@ -96,6 +105,3 @@ class Search {
 
 export { Search }
 
-let b = new Board(6, 6)
-let directions = Search.UCS(b)
-console.log(directions)
