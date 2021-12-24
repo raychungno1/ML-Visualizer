@@ -144,15 +144,12 @@ class Board {
             output += "<tr>"
             row.forEach((cell, j) => {
 
-                output += "<td class=\""
+                output += `<td class="`
                 if (!cell.n || i === 0)                output += "north "
                 if (!cell.s || i === this.rows - 1)    output += "south "
                 if (!cell.e || j === this.cols - 1)    output += "east "
                 if (!cell.w || j === 0)                output += "west "
-                output += `" id="r${i}c${j}">`
-                if (arrEquals(this.startState, [i, j])) output += `<div class="icon start-icon"></div>`
-                if (arrEquals(this.goalState, [i, j])) output += `<div class="icon goal-icon"></div>`
-                output += "</td>"
+                output += `" id="r${i}c${j}"></td>`
             })
             output += "</tr>"
         })
