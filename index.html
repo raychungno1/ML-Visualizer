@@ -19,8 +19,19 @@
             <h1 id="alg-type">---</h1>
         </div>
     </div>
+    <div class="buttons row">
+        <button class="btn" id="gen-maze">Generate Maze</button>
+        <button class="btn" id="clear-btn">Clear Maze</button>
+        <button class="btn" id="bfs-btn">BFS</button>
+        <button class="btn" id="dfs-btn">DFS</button>
+        <button class="btn" id="ucs-btn">UCS</button>
+        <button class="btn" id="greedy-btn">Greedy</button>
+        <button class="btn" id="a-star-btn">A*</button>
+    </div>
     <div class="container main-row">
-        <table class="grid" id="grid"></table>
+        <div class="grid">
+            <table class="grid" id="grid"></table>
+        </div>
         <div class="alg-stat-row">
             <div class="alg-stat">
                 <div class="chart">
@@ -41,15 +52,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="buttons row">
-        <button class="btn" id="gen-maze">Generate Maze</button>
-        <button class="btn" id="clear-btn">Clear Maze</button>
-        <button class="btn" id="bfs-btn">BFS</button>
-        <button class="btn" id="dfs-btn">DFS</button>
-        <button class="btn" id="ucs-btn">UCS</button>
-        <button class="btn" id="greedy-btn">Greedy</button>
-        <button class="btn" id="a-star-btn">A*</button>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.0/gsap.min.js" integrity="sha512-gWlyRVDsJvp5kesJt4cSdPPLZIBdln/uSwzYgUicQcbTgRNQE4QhP5KUBIYlLYLkiKIQiuD7KUMHzqGNW/D2bQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

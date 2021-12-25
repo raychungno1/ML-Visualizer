@@ -65,13 +65,18 @@ h1, h2 {
     padding-right: .5em;
 }
 
-.alg-stat h1 {
-    font-size: 5rem;
+.buttons {
+    margin: 1em auto;
+    border-radius: 100px;
+    background: #18283b;
+    width: 90%;
+    max-width: 1200px;
+    justify-content: center;
+    overflow: hidden;
 }
 
 .alg-stat {
-    margin: 3em auto;
-    /* text-align: center; */
+    margin: 2em auto;
     position: relative;
     display: flex;
     justify-content: center;
@@ -79,6 +84,12 @@ h1, h2 {
     align-items: center;
     background: #18283b;
     padding: .5em 1em;
+    border-radius: 1em;
+    box-shadow: 4px 4px 0 rgba(255,255,255,0.1);
+}
+
+.alg-stat h1 {
+    font-size: 5rem;
 }
 
 .stat {
@@ -95,7 +106,15 @@ h1, h2 {
 .btn {
     display: block;
     border: none;
-    padding: 1em;
+    padding: .5em 1em;
+    background: none;
+    color: white;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.btn:hover {
+    background-color: rgba(242, 53, 104, .5);
 }
 
 .grid {
@@ -103,8 +122,10 @@ h1, h2 {
     max-height: 1200px;
     margin: 0 auto;
     border-collapse: collapse;
-    box-shadow: 0 0 20px rgba(0,0,0,0.25);
+    box-shadow: 4px 4px 0 rgba(255,255,255,0.1);
     background-color: rgba(255,255,255,0.2);
+    border-radius: 1em;
+    overflow: hidden;
 }
 
 .grid td {
@@ -144,6 +165,11 @@ td.expansion {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    transition: opacity 1 ease-in-out
+}
+
+.icon:hover {
+    opacity: .7;
 }
 
 .start-icon {
@@ -172,11 +198,6 @@ td.expansion {
     height: 25px;
     border-radius: 100px;
     background-color: rgba(0, 64, 0, 0.5);
-}
-
-.buttons {
-    margin: 0 auto;
-    justify-content: center;
 }
 
 @media (min-width: 650px) {
@@ -219,7 +240,7 @@ td.expansion {
 
     .alg-stat {
         width: 100%;
-        height: 30;
+        height: 28vh;
         margin: 0
     }
 
