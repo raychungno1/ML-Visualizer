@@ -15,6 +15,7 @@ const btn = {
     greedy: document.getElementById ("greedy-btn"),
     aStar: document.getElementById  ("a-star-btn")
 }
+const closeBtn = document.querySelector(".close-btn")
 
 // Initial board setup (when loading website)
 let recentAlg, rows, cols, b, start, goal
@@ -35,6 +36,7 @@ btn.dfs.addEventListener(       "click", () => recentAlg = runDFS(b, true))
 btn.ucs.addEventListener(       "click", () => recentAlg = runUCS(b, true))
 btn.greedy.addEventListener(    "click", () => recentAlg = runGreedy(b, true))
 btn.aStar.addEventListener(     "click", () => recentAlg = runAStar(b, true))
+closeBtn.addEventListener(      "click", () => closeBtn.parentNode.remove())
 
 /**
  * Set up the board
