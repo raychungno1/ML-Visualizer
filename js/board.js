@@ -80,13 +80,6 @@ class Board {
         })
     }
 
-    // /**
-    //  * Gets value at location
-    //  * @param {Array} state     location to get value
-    //  * @returns {number}        value at state
-    //  */
-    // getValue(state) { return this.grid.get(...state) }
-
     /**
      * Checks for a goal state
      * @param {Array} state     location to check state [row, col]
@@ -149,7 +142,9 @@ class Board {
                 if (!cell.s || i === this.rows - 1)    output += "south "
                 if (!cell.e || j === this.cols - 1)    output += "east "
                 if (!cell.w || j === 0)                output += "west "
-                output += `" id="r${i}c${j}"></td>`
+                output += `" id="r${i}c${j}">`
+                if (arrEquals(this.startState, [i, j])) output += `<div class="icon start-icon"></div>`
+                if (arrEquals(this.goalState, [i, j])) output += `<div class="icon goal-icon"></div>`
             })
             output += "</tr>"
         })
@@ -161,10 +156,8 @@ class Board {
         if (i < expansion.length) {
             let [row, col] = expansion[i]
             grid.rows[row].cells[col].classList.add("expansion")
-        } else if (i === expansion.length) {
-            grid.rows[start[0]].cells[start[1]].classList.add("solution")
         } else {
-            [start[0], start[1]] = Directions[directions[i-expansion.length-1]].update(start)
+            if (i !== expansion.length) [start[0], start[1]] = Directions[directions[i-expansion.length-1]].update(start)
             grid.rows[start[0]].cells[start[1]].classList.add("solution")
         }
 
@@ -180,17 +173,13 @@ class Board {
     static animatePath(grid, directions, costs, expansion, nodeCount, totalCost, start, i) {
         if (i < expansion.length) {
             let [row, col] = expansion[i]
-            gsap.fromTo(`#r${row}c${col}`, {scale: 0}, {scale: 1, backgroundColor: "rgba(255, 128, 128, .5)", duration: 1, ease: "elastic.out(1, 1)"})
+            grid.rows[row].cells[col].classList.add("expansion")
+            gsap.fromTo(`#r${row}c${col}`, {scale: 0}, {scale: 1, duration: .5})
             
             totalCost.textContent = `Cost: 0`
             nodeCount.textContent = `Nodes Searched: ${i}`
-        } else if (i === expansion.length) {
-            let [row, col] = start
-            const tl = gsap.timeline({defaults: {duration: 1, ease: "power4.out"}})
-            tl.fromTo(`#r${row}c${col}`, {scale: 1}, {scale: .5})
-            tl.fromTo(`#r${row}c${col}`, {scale: .5, backgroundColor: "rgba(255, 128, 128, .5)"}, {scale: 1, backgroundColor: "rgba(255, 0, 0, .5)", duration: 1, ease: "elastic.out(1, 0.5)"}, "<15%")
         } else {
-            [start[0], start[1]] = Directions[directions[i-expansion.length-1]].update(start)
+            if (i !== expansion.length) [start[0], start[1]] = Directions[directions[i-expansion.length-1]].update(start)
             let [row, col] = start
             const tl = gsap.timeline({defaults: {duration: 1, ease: "power4.out"}})
             tl.fromTo(`#r${row}c${col}`, {scale: 1}, {scale: .5})
@@ -202,7 +191,7 @@ class Board {
             }
             setTimeout(() => {
                 totalCost.textContent = `Cost: ${cost}`
-            }, (i-expansion.length))
+            }, 3 * (i-expansion.length))
 
         }
     }
@@ -220,6 +209,18 @@ class Board {
             }
         }
     }
+
+    clearPath(grid) {
+        for (let i = 0, row; row = grid.rows[i]; i++) {
+            for (let j = 0, col; col = row.cells[j]; j++) {
+                col.style = ""
+                col.classList.remove("expansion")
+                col.classList.remove("solution")
+            }  
+        }
+    }
 }
+
+
 
 export { Board }

@@ -58,12 +58,6 @@ body {
     border-left: 3px solid black;
 }
 
-.icon {
-    width: 30px;
-    height: 30px;
-    border-radius: 100px;
-}
-
 td.expansion {
     background: rgba(255, 128, 128, 0.5);
 }
@@ -72,12 +66,40 @@ td.solution {
     background: rgba(255, 0, 0, .5);
 }
 
+
+.icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
 .start-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 100px;
     background: red;
 }
 
 .goal-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 100px;
     background: green;
+}
+
+.start-placeholder {
+    width: 25px;
+    height: 25px;
+    border-radius: 100px;
+    background-color: rgba(128, 0, 0, 0.5);
+}
+
+.goal-placeholder {
+    width: 25px;
+    height: 25px;
+    border-radius: 100px;
+    background-color: rgba(0, 64, 0, 0.5);
 }
 
 .buttons {
