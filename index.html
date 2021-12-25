@@ -4,26 +4,56 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Search Algorithms</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-    <div class="container" id="grid-container">
-        <h1 id="alg-type">Algorithm: ---</h1>
-        <h1 id="node-count">Nodes Searched: 0</h1>
-        <h1 id="total-cost">Total Cost: 0</h1>
-        <table class="grid" id="grid"></table>
-        <div class="buttons row">
-            <button class="btn" id="gen-maze">Generate Maze</button>
-            <button class="btn" id="clear-btn">Clear Maze</button>
-            <button class="btn" id="bfs-btn">BFS</button>
-            <button class="btn" id="dfs-btn">DFS</button>
-            <button class="btn" id="ucs-btn">UCS</button>
-            <button class="btn" id="greedy-btn">Greedy</button>
-            <button class="btn" id="a-star-btn">A*</button>
+    <div class="alg-type row">
+        <div class="alg-type__title">
+            <h1>Algorithm</h1>
+        </div>
+        <div class="alg-type__info">
+            <h1 id="alg-type">---</h1>
         </div>
     </div>
+    <div class="container main-row">
+        <table class="grid" id="grid"></table>
+        <div class="alg-stat-row">
+            <div class="alg-stat">
+                <div class="chart">
+                    <canvas id="nodeChart"></canvas>
+                </div>
+                <div class="stat">
+                    <h1 id="node-count">0</h1>
+                    <h2>Nodes Searched</h2>
+                </div>
+            </div>
+            <div class="alg-stat">
+                <div class="chart">
+                    <canvas id="costChart"></canvas>
+                </div>
+                <div class="stat">
+                    <h1 id="total-cost">0</h1>
+                    <h2>Total Cost</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="buttons row">
+        <button class="btn" id="gen-maze">Generate Maze</button>
+        <button class="btn" id="clear-btn">Clear Maze</button>
+        <button class="btn" id="bfs-btn">BFS</button>
+        <button class="btn" id="dfs-btn">DFS</button>
+        <button class="btn" id="ucs-btn">UCS</button>
+        <button class="btn" id="greedy-btn">Greedy</button>
+        <button class="btn" id="a-star-btn">A*</button>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.0/gsap.min.js" integrity="sha512-gWlyRVDsJvp5kesJt4cSdPPLZIBdln/uSwzYgUicQcbTgRNQE4QhP5KUBIYlLYLkiKIQiuD7KUMHzqGNW/D2bQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="js/renderBoard.js"></script>
+    <script type="module" src="js/renderChart.js"></script>
 </body>
 </html>

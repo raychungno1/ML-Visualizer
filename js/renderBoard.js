@@ -1,6 +1,7 @@
 import { arrEquals } from "./array.js"
 import { Board } from "./board.js"
 import { Search } from "./search.js"
+import { renderChart, updateChart } from "./renderChart.js"
 
 // DOM elements & constants
 const gridSize = 30
@@ -18,10 +19,11 @@ const btn = {
 // Initial board setup (when loading website)
 let recentAlg, rows, cols, b, start, goal
 let startEl, goalEl, dragEl, isDragging, placeholder
-var mouse = {
+let mouse = {
     x: null,
     y: null
 }
+let nodeChart, nodePercent, costChart, costPercent
 setup(false)
 
 // Setup buttons
@@ -40,9 +42,9 @@ btn.aStar.addEventListener(     "click", () => recentAlg = runAStar(b, true))
  */
 function setup(genMaze) {
     // Reset text
-    document.getElementById("alg-type").textContent = "Algorithm: ---"
-    document.getElementById("node-count").textContent = "Nodes Searched: 0"
-    document.getElementById("total-cost").textContent = "Total Cost: 0"
+    document.getElementById("alg-type").textContent = "---"
+    document.getElementById("node-count").textContent = "0"
+    document.getElementById("total-cost").textContent = "0"
     recentAlg = null
 
     // Calculate board dimensions
@@ -63,6 +65,9 @@ function setup(genMaze) {
     goal = b.goalState
     goalEl = grid.rows[goal[0]].cells[goal[1]].firstChild
     goalEl.addEventListener('mousedown', mouseDownHandler)
+
+    if (!nodeChart) nodeChart = renderChart("nodeChart", [0, 1], 0)
+    if (!costChart) costChart = renderChart("costChart", [0, 1], 0)
 }
 
 function mouseDownHandler(e) {
@@ -121,7 +126,6 @@ function mouseMoveHandler(e) {
         else if (recentAlg === "UCS")    runUCS(b, false)
         else if (recentAlg === "Greedy") runGreedy(b, false)
         else if (recentAlg === "A*")     runAStar(b, false)
-        console.log(rerender)
     }
 }
 
@@ -212,12 +216,20 @@ function renderResult(b, algType, solution, animate) {
     const totalCostTxt = document.getElementById("total-cost")
     const btn = document.querySelectorAll("button")
 
-    algTxt.textContent = `Algorithm: ${algType}`
+    algTxt.textContent = `${algType}`
     b.clearPath(grid)
     b.renderPath(grid, ...solution, nodeCountTxt, totalCostTxt, animate)
     
+    let numNodes = solution[2].length
+    nodePercent = numNodes / (rows * cols)
+
+    let cost = solution[1].length
+    costPercent = cost / (rows * cols)
     // Disable buttons until animation finishes
     if (animate) {
+        updateChart(nodeChart, [0, 1], 0)
+        updateChart(costChart, [0, 1], 0)
+        updateChart(nodeChart, [nodePercent, 1 - nodePercent], 13 * (solution[2].length))
         startEl.removeEventListener('mousedown', mouseDownHandler)
         goalEl.removeEventListener('mousedown', mouseDownHandler)
         btn.forEach(b => b.disabled = true)
@@ -225,6 +237,12 @@ function renderResult(b, algType, solution, animate) {
             startEl.addEventListener('mousedown', mouseDownHandler)
             goalEl.addEventListener('mousedown', mouseDownHandler)
             btn.forEach(b => b.disabled = false)
-        }, 10.5 * (solution[0].length + solution[2].length))
+        }, 11 * (solution[0].length + solution[2].length))
+        setTimeout(() => {
+            updateChart(costChart, [costPercent, 1 - costPercent], 13 * (solution[0].length))
+        }, 10 * (solution[2].length))
+    } else {
+        updateChart(nodeChart, [nodePercent, 1 - nodePercent], 500)
+        updateChart(costChart, [costPercent, 1 - costPercent], 500)
     }
 }

@@ -52,6 +52,17 @@ class Board {
 
         // Then carve out the maze recursively
         this.carve_passages(this.startState)
+
+        for (let i = 0; i < this.rows * this.cols / 2; i++) {
+            const row = Math.floor(Math.random() * this.rows)
+            const col = Math.floor(Math.random() * this.cols)
+            const d = Directions[arrShuffle(["n", "s", "e", "w"])[0]]
+            const newState = d.update([row, col])
+            if (this.inRange(...newState)) {
+                this.grid.get(row, col)[d.dir] = 1
+                this.grid.get(...newState)[d.opposite] = 1
+            }
+        }
     }
 
     /**
@@ -136,7 +147,6 @@ class Board {
         this.grid.arr.forEach((row, i) => {
             output += "<tr>"
             row.forEach((cell, j) => {
-
                 output += `<td class="`
                 if (!cell.n || i === 0)                output += "north "
                 if (!cell.s || i === this.rows - 1)    output += "south "
@@ -165,8 +175,8 @@ class Board {
         for (let k = 0; k < costs.length; k++) {
             cost += costs[k]
         }
-        totalCost.textContent = `Cost: ${cost}`
-        nodeCount.textContent = `Nodes Searched: ${expansion.length - 1}`
+        totalCost.textContent = cost
+        nodeCount.textContent = expansion.length - 1
     }
 
     /** Renders the solution path onto the webpage (with animations) */
@@ -176,22 +186,23 @@ class Board {
             grid.rows[row].cells[col].classList.add("expansion")
             gsap.fromTo(`#r${row}c${col}`, {scale: 0}, {scale: 1, duration: .5})
             
-            totalCost.textContent = `Cost: 0`
-            nodeCount.textContent = `Nodes Searched: ${i}`
+            totalCost.textContent = "0"
+            nodeCount.textContent = i
         } else {
             if (i !== expansion.length) [start[0], start[1]] = Directions[directions[i-expansion.length-1]].update(start)
             let [row, col] = start
-            const tl = gsap.timeline({defaults: {duration: 1, ease: "power4.out"}})
-            tl.fromTo(`#r${row}c${col}`, {scale: 1}, {scale: .5})
-            tl.fromTo(`#r${row}c${col}`, {scale: .5, backgroundColor: "rgba(255, 128, 128, .5)"}, {scale: 1, backgroundColor: "rgba(255, 0, 0, .5)", duration: 1, ease: "elastic.out(1, 0.5)"}, "<15%")
+            const tl = gsap.timeline({defaults: {duration: .2}})
+            tl.fromTo(`#r${row}c${col}`, {scale: 1}, {scale: .75})
+            grid.rows[row].cells[col].classList.add("solution")
+            tl.fromTo(`#r${row}c${col}`, {scale: .75, opacity: .4}, {scale: 1, opacity: 1})
 
             let cost = 0
             for (let k = 0; k < i-expansion.length; k++) {
                 cost += costs[k]
             }
             setTimeout(() => {
-                totalCost.textContent = `Cost: ${cost}`
-            }, 3 * (i-expansion.length))
+                totalCost.textContent = cost
+            }, (i-expansion.length))
 
         }
     }
@@ -213,14 +224,12 @@ class Board {
     clearPath(grid) {
         for (let i = 0, row; row = grid.rows[i]; i++) {
             for (let j = 0, col; col = row.cells[j]; j++) {
-                col.style = ""
-                col.classList.remove("expansion")
+                col.removeAttribute('style')
                 col.classList.remove("solution")
+                col.classList.remove("expansion")
             }  
         }
     }
 }
-
-
 
 export { Board }

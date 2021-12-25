@@ -133,7 +133,11 @@ class Search {
     
     /** Uses manhattan distance as a heuristic */
     static heuristic(state, goalState) {
-        return Math.abs(state[0] - goalState[0]) + Math.abs(state[1] - goalState[1])
+        // return Math.abs(state[0] - goalState[0]) + Math.abs(state[1] - goalState[1])
+        return Math.sqrt(
+            ((state[0] - goalState[0]) ** 2) +
+            ((state[1] - goalState[1]) ** 2)
+        )
     }
 }
 

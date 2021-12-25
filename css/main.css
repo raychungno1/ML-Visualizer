@@ -1,13 +1,18 @@
 *, *::before, *::after {
     box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
 }
 
 body {
     margin: 0;
-    padding: 1px;
-    height: 100vh;
-    /* min-height: 100vh; */
-    background: linear-gradient(45deg, #49a09d, #5f2c82);
+    background:#101A26;
+}
+
+h1, h2 {
+    margin: 0;
+    padding: 0;
+    color: white;
+    line-height: 1;
 }
 
 .container {
@@ -18,7 +23,73 @@ body {
 
 .row {
     display: flex;
-    gap: 2rem;
+}
+
+.info-small {
+    background: #18283b;
+    padding: 1em 1em 0;
+    border-radius: 1em;
+}
+
+.alg-type {
+    width: 400px;
+    margin: 1em auto;
+    padding: 0;
+    border-radius: 2em;
+    overflow: hidden;
+    text-align: center;
+    background-color: #18283b;
+}
+
+.alg-type__title {
+    padding: 1em 0;
+    background: #F23568;
+    border-radius: 0 0 2em 0;
+    display: flex;
+    align-items: center;
+    width: 60%
+}
+
+.alg-type__info {
+    display: flex;
+    align-items: center;
+    width: 40%
+}
+
+.alg-type__title h1 {
+    margin: 0 auto;
+}
+
+.alg-type__info h1 {
+    margin: 0 auto;
+    padding-right: .5em;
+}
+
+.alg-stat h1 {
+    font-size: 5rem;
+}
+
+.alg-stat {
+    margin: 3em auto;
+    /* text-align: center; */
+    position: relative;
+    display: flex;
+    justify-content: center;
+    gap: 1em;
+    align-items: center;
+    background: #18283b;
+    padding: .5em 1em;
+}
+
+.stat {
+    min-width: 175px;
+}
+
+.chart {
+    position: relative;
+    height: 200px;
+    width: 200px;
+    margin-left: 1em;
 }
 
 .btn {
@@ -30,7 +101,7 @@ body {
 .grid {
     width: 100%;
     max-height: 1200px;
-    margin: 3em auto;
+    margin: 0 auto;
     border-collapse: collapse;
     box-shadow: 0 0 20px rgba(0,0,0,0.25);
     background-color: rgba(255,255,255,0.2);
@@ -41,29 +112,30 @@ body {
     height: 30px;
     border: none;
     padding: 0;
-    border: 1.5px solid rgba(85, 96, 143, 0.5);
+    /* border: 1.5px solid rgba(85, 96, 143, 0.5); */
+    /* border: 1.5px solid rgba(16, 26, 38, 0.25); */
     position: relative;
 }
 
 .grid td.north {
-    border-top: 3px solid black;
+    border-top: 3px solid #101A26;
 }
 .grid td.south {
-    border-bottom: 3px solid black;
+    border-bottom: 3px solid #101A26;
 }
 .grid td.east {
-    border-right: 3px solid black;
+    border-right: 3px solid #101A26;
 }
 .grid td.west {
-    border-left: 3px solid black;
+    border-left: 3px solid #101A26;
 }
 
 td.expansion {
-    background: rgba(255, 128, 128, 0.5);
+    background: rgba(166, 163, 211, .4);
 }
 
-td.solution {
-    background: rgba(255, 0, 0, .5);
+.grid td.solution {
+    background: rgb(166, 163, 211);
 }
 
 
@@ -105,4 +177,53 @@ td.solution {
 .buttons {
     margin: 0 auto;
     justify-content: center;
+}
+
+@media (min-width: 650px) {
+    .alg-stat-row {
+        display: flex;
+        gap: 2em;
+        justify-content: space-between;
+    }
+
+    .alg-stat {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .stat {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .chart {
+        margin: 0;
+    }
+}
+
+@media (min-width: 1200px) {
+
+    .main-row {
+        display: flex;
+        gap: 2em;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+
+    .alg-stat-row {
+        display: block;
+    }
+
+    .alg-stat {
+        width: 100%;
+        height: 30;
+        margin: 0
+    }
+
+    .alg-stat + .alg-stat {
+        margin-top: 2em
+    }
 }
