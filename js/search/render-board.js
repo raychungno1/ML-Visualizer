@@ -1,7 +1,7 @@
 import { arrEquals } from "./array.js"
 import { Board } from "./board.js"
 import { Search } from "./search.js"
-import { renderChart, updateChart } from "./renderChart.js"
+import { renderChart, updateChart } from "./render-chart.js"
 
 // DOM elements & constants
 const gridSize = 30
@@ -68,8 +68,16 @@ function setup(genMaze) {
     goalEl = grid.rows[goal[0]].cells[goal[1]].firstChild
     goalEl.addEventListener('mousedown', mouseDownHandler)
 
-    if (!nodeChart) nodeChart = renderChart("nodeChart", [0, 1], 0)
-    if (!costChart) costChart = renderChart("costChart", [0, 1], 0)
+    if (nodeChart) {
+        updateChart(nodeChart, [0, 1], 0)
+    } else {
+        nodeChart = renderChart("nodeChart", [0, 1], 0)
+    }
+    if (costChart) {
+        updateChart(costChart, [0, 1], 0)
+    } else {
+        costChart = renderChart("costChart", [0, 1], 0)
+    }
 }
 
 function mouseDownHandler(e) {

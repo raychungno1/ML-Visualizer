@@ -1,0 +1,80 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    margin: 0;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+table td {
+    border: 3px solid black;
+    padding: .5em;
+}
+
+/* table td:hover {
+    background-color: rgb(194, 194, 194);
+    outline: 5px dotted gray;
+    outline-offset: -5px;
+} */
+
+.grid tr:first-child td {
+  border-top: 0;
+}
+
+.grid tr td:first-child {
+  border-left: 0;
+}
+
+.grid tr:last-child td {
+  border-bottom: 0;
+}
+
+.grid tr td:last-child {
+  border-right: 0;
+}
+
+.cell {
+    width: 20vh;
+    height: 20vh;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+
+.X {
+    width: 20vh;
+    height: 20vh;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.X::before,
+.X::after {
+    position: absolute;
+    content: '';
+    width: 125%;
+    height: 4px; /* cross thickness */
+    background-color: black;
+}
+
+.X::before {
+    transform: rotate(45deg);
+}
+
+.X::after {
+    transform: rotate(-45deg);
+}
+
+.O {
+    border-radius: 100px;
+    border: 4px solid black;
+    margin: 0 auto;
+}

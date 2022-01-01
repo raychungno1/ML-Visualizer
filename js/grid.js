@@ -17,11 +17,25 @@ class Grid {
         }
     }
 
+    /** Returns true if [row, col] is in range of the board */
+    isValid(row, col) {
+        return 0 <= row && row < this.arr.length
+            && 0 <= col && col < this.arr[0].length
+    }
+
     /** Gets the value at [row, col] of the grid */
     get(row, col) { return (this.arr[row]) ? this.arr[row][col] : null }
 
     /** Sets the value at [row, col] of the grid */
     set(row, col, val) { this.arr[row][col] = val }
+
+    iterate(func, ...args) {
+        this.arr.forEach((row, i) => {
+            row.forEach((cell, j) => {
+                func(cell, [i, j], ...args)
+            });
+        });
+    }
 }
 
 export { Grid }

@@ -1,4 +1,4 @@
-import { Queue, Stack, KV, MinHeap } from "./dataStructs.js"
+import { Queue, Stack, KV, MinHeap } from "../data-structs.js"
 import { arrEquals } from "./array.js"
 
 class Search {

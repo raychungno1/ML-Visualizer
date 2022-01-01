@@ -1,6 +1,6 @@
 import { arrShuffle, arrEquals, cellEquals } from "./array.js"
 import { Directions } from "./directions.js"
-import { Grid } from "./grid.js"
+import { Grid } from "../grid.js"
 
 class Board {
 
@@ -155,6 +155,7 @@ class Board {
                 output += `" id="r${i}c${j}">`
                 if (arrEquals(this.startState, [i, j])) output += `<div class="icon start-icon"></div>`
                 if (arrEquals(this.goalState, [i, j])) output += `<div class="icon goal-icon"></div>`
+                output += "</td>"
             })
             output += "</tr>"
         })
