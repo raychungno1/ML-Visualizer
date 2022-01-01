@@ -184,18 +184,14 @@ class Board {
     static animatePath(grid, directions, costs, expansion, nodeCount, totalCost, start, i) {
         if (i < expansion.length) {
             let [row, col] = expansion[i]
-            grid.rows[row].cells[col].classList.add("expansion")
-            gsap.fromTo(`#r${row}c${col}`, {scale: 0}, {scale: 1, duration: .5})
+            grid.rows[row].cells[col].classList.add("expansion--animated")
             
             totalCost.textContent = "0"
             nodeCount.textContent = i
         } else {
             if (i !== expansion.length) [start[0], start[1]] = Directions[directions[i-expansion.length-1]].update(start)
             let [row, col] = start
-            const tl = gsap.timeline({defaults: {duration: .2}})
-            tl.fromTo(`#r${row}c${col}`, {scale: 1}, {scale: .75})
-            grid.rows[row].cells[col].classList.add("solution")
-            tl.fromTo(`#r${row}c${col}`, {scale: .75, opacity: .4}, {scale: 1, opacity: 1})
+            grid.rows[row].cells[col].classList.add("solution--animated")
 
             let cost = 0
             for (let k = 0; k < i-expansion.length; k++) {
@@ -227,7 +223,9 @@ class Board {
             for (let j = 0, col; col = row.cells[j]; j++) {
                 col.removeAttribute('style')
                 col.classList.remove("solution")
+                col.classList.remove("solution--animated")
                 col.classList.remove("expansion")
+                col.classList.remove("expansion--animated")
             }  
         }
     }

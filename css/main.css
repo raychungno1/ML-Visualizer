@@ -178,9 +178,41 @@ h1, h2, p {
 .east { border-right: 3px solid #101A26 }
 .west { border-left: 3px solid #101A26 }
 
-.expansion { background: rgba(166, 163, 211, .4) }
-.solution { background: rgb(166, 163, 211) }
+.expansion {
+    background: rgba(166, 163, 211, .4);
+}
+.solution {
+    background: rgb(166, 163, 211);
+}
 
+.expansion--animated {
+    animation: expansionPath .5s;
+    background: rgba(166, 163, 211, .4);
+}
+.solution--animated {
+    animation: solutionPath .5s;
+    background: rgb(166, 163, 211);
+}
+
+@keyframes expansionPath {
+    0%      {transform: scale(0);}
+    100%    {
+                transform: scale(1);
+                background: rgba(166, 163, 211, .4);
+            }
+}
+
+@keyframes solutionPath {
+    0%      {
+                transform: scale(1);
+                background: rgba(166, 163, 211, .4);
+            }
+    40%     {transform: scale(.75)}
+    100%    {
+                transform: scale(1);
+                background: rgb(166, 163, 211);
+            }
+}
 
 .icon {
     width: 30px;

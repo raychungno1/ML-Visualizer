@@ -16,12 +16,6 @@ table td {
     padding: .5em;
 }
 
-/* table td:hover {
-    background-color: rgb(194, 194, 194);
-    outline: 5px dotted gray;
-    outline-offset: -5px;
-} */
-
 .grid tr:first-child td {
   border-top: 0;
 }
@@ -39,17 +33,18 @@ table td {
 }
 
 .cell {
-    width: 20vh;
-    height: 20vh;
+    width: 10vw;
+    height: 10vw;
+    max-width: 150px;
+    max-height: 150px;
     margin: 0 auto;
     display: flex;
     align-items: center;
 }
 
-
 .X {
-    width: 20vh;
-    height: 20vh;
+    width: 10vw;
+    height: 10vw;
     position: relative;
     display: flex;
     flex-direction: column;
