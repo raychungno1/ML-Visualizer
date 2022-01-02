@@ -1,15 +1,16 @@
 import { Grid } from "../grid.js"
+import { maxValue, minValue } from "./minimax.js"
 
 class TicTacToe {
     
     /** Initializes a new Tic-Tac-Toe game */
-    constructor() {
+    constructor(HTML) {
         // if turn is 0, it is X's turn
         // if turn is 1, it is O's turn
         this.board = new Grid(3, 3, "");
         this.moves = [];
         this.turn = 0;
-        this.grid = document.getElementById("grid")
+        this.grid = HTML ? document.getElementById("grid") : null;
     }
 
     /** Returns a list of available moves */
@@ -42,7 +43,7 @@ class TicTacToe {
             this.moves.push(coords);
             this.turn = 1 - this.turn;
             
-            let combo = this.getWinner(coords);
+            let combo = this.getWinnerCombo(coords);
             if (combo) {
                 return {
                     player: val,
@@ -61,40 +62,47 @@ class TicTacToe {
     undo() {
         let move = this.moves.pop();
         this.board.set(...move, "");
+        this.turn = 1 - this.turn;
         return move;
     }
 
     /** Checks the board for a win */
-    getWinner([row, col]) {
-        if (this.checkRow(row)) return [[row, 0], [row, 1], [row, 2]];
-        if (this.checkCol(col)) return [[0, col], [1, col], [2, col]];
-        if (this.checkDiag1())  return [[0, 0], [1, 1], [2, 2]];
-        if (this.checkDiag2())  return [[0, 2], [1, 1], [2, 0]];
-        return null;
+    getWinnerCombo([row, col]) {
+        let b = this.board;
+
+        // Check row
+        if (b.get(row, 0) && b.get(row, 0) === b.get(row, 1) && b.get(row, 1) === b.get(row, 2)) {
+            return [[row, 0], [row, 1], [row, 2]];
+        }
+
+        // Check column
+        if (b.get(0, col) && b.get(0, col) === b.get(1, col) && b.get(1, col) === b.get(2, col)) {
+            return [[0, col], [1, col], [2, col]];
+        }
+
+        // Check diagonal (upper left -> lower right)
+        if (b.get(0, 0) && b.get(0, 0) === b.get(1, 1) && b.get(1, 1) === b.get(2, 2)) {
+            return [[0, 0], [1, 1], [2, 2]];
+        }
+
+        // Check diagonal (upper right -> lower left)
+        if (b.get(0, 2) && b.get(0, 2) === b.get(1, 1) && b.get(1, 1) === b.get(2, 0)) {
+            return [[0, 2], [1, 1], [2, 0]];
+        }
+
+        return null; // If no bombo found
     }
 
-    /** Checks a specific row for a win */
-    checkRow(row) {
-        let b = this.board;
-        return b.get(row, 0) && b.get(row, 0) === b.get(row, 1) && b.get(row, 1) === b.get(row, 2);
+    isTerminal() {
+        return this.getWinnerCombo(this.moves.at(-1)) || this.moves.length === 9;
     }
 
-    /** Checks a specific col for a win */
-    checkCol(col) {
-        let b = this.board;
-        return b.get(0, col) && b.get(0, col) === b.get(1, col) && b.get(1, col) === b.get(2, col);
-    }
-
-    /** Checks a the diagonal from the upper left to the lower right for a win */
-    checkDiag1() {
-        let b = this.board;
-        return b.get(0, 0) && b.get(0, 0) === b.get(1, 1) && b.get(1, 1) === b.get(2, 2);
-    }
-    
-    /** Checks a the diagonal from the upper right to the lower left for a win */
-    checkDiag2() {
-        let b = this.board;
-        return b.get(0, 2) && b.get(0, 2) === b.get(1, 1) && b.get(1, 1) === b.get(2, 0);
+    /** Returns -1 if X wins, 1 if O wins, 0 for draw */
+    getWinner() {
+        if (this.getWinnerCombo(this.moves.at(-1))) {
+            return this.turn ? -1 : 1;
+        }
+        if (this.moves.length === 9) return 0;
     }
 
     /** Prints a represnetation of the board to the console */
@@ -155,8 +163,22 @@ class TicTacToe {
 
     /** Selects an ai move & performs it */
     aiMove() {
+        let max = -Infinity;
+        let maxIndex = 0;
         let successors = this.successors();
-        let results = this.move(successors[0]);
+        successors.forEach((successor, i) => {
+            this.move(successor);
+
+            let minVal = minValue(this);
+            if (minVal > max) {
+                max = minVal;
+                maxIndex = i;
+            }
+    
+            this.undo();
+        });
+
+        let results = this.move(successors[maxIndex]);
         this.render();
 
         if (results) this.endGame(results)
@@ -170,6 +192,9 @@ class TicTacToe {
                 divEl.removeEventListener("click", this.playerMove);
             }
         }
+
+        let result = document.getElementById("result");
+        result.textContent = results.player ? `${results.player} Wins!` : "Draw!"
         console.log(results);
     }
 
