@@ -1,49 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="css/adv-search.css">
-</head>
-<body>
-    <table id="grid" class="grid">
-        <tr>
-            <td>
-                <div class="cell"></div>
-            </td> 
-            <td>
-                <div class="cell"></div>
-            </td>
-            <td>
-                <div class="cell"></div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="cell"></div>
-            </td>
-            <td>
-                <div class="cell"></div>
-            </td>
-            <td>
-                <div class="cell"></div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="cell"></div>
-            </td>
-            <td>
-                <div class="cell"></div>
-            </td>
-            <td>
-                <div class="cell"></div>
-            </td>
-        </tr>
-    </table>
-    <h1 id="result"></h1>
-    <script type="module" src="./js/adversarial-search/render.js"></script>
-</body>
+    <link rel="stylesheet" href="css/adv-search.css" />
+    <script src="js/adversarial-search/tic-tac-toe.js" defer></script>
+  </head>
+  <body>
+    <div class="board" id="board">
+      <div class="cell" data-cell></div>
+      <div class="cell" data-cell></div>
+      <div class="cell" data-cell></div>
+      <div class="cell" data-cell></div>
+      <div class="cell" data-cell></div>
+      <div class="cell" data-cell></div>
+      <div class="cell" data-cell></div>
+      <div class="cell" data-cell></div>
+      <div class="cell" data-cell></div>
+      <div class="combo" id="combo"></div>
+      <div class="winning-msg show" id="winning-msg">
+        <div data-winning-msg-text></div>
+        <div class="buttons-txt">Play as:</div>
+        <div>
+          <button class="btn x" id="x-btn">X</button>
+          <button class="btn o" id="o-btn">O</button>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
