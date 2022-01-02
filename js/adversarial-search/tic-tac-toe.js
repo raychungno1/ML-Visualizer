@@ -85,7 +85,7 @@ function aiTurn() {
     successors.forEach(i => {
         game[i] = currentClass;
 
-        let val = minimax(game, false);
+        let val = minimax(game, false, 1);
         if (val > max) {
             max = val;
             maxIndex = i;
@@ -113,9 +113,9 @@ function getSuccessors() {
     }, [])
 }
 
-function minimax(game, isMax) {
+function minimax(game, isMax, depth) {
     let currentClass = xTurn ? X : O;
-    if (checkWin(currentClass).length !== 0) return isMax ? -1 : 1;
+    if (checkWin(currentClass).length !== 0) return (isMax ? -1 : 1) / depth;
     if (isDraw()) return 0;
     
     swapTurns();
@@ -127,7 +127,7 @@ function minimax(game, isMax) {
     successors.forEach(i => {
         game[i] = currentClass;
         
-        val = isMax ? Math.max(val, minimax(game, false)) : Math.min(val, minimax(game, true));
+        val = isMax ? Math.max(val, minimax(game, false, depth + 1)) : Math.min(val, minimax(game, true, depth + 1));
         
         game[i] = ""
     });
