@@ -4,8 +4,8 @@
 }
 
 :root {
-    --cell-size: 30vw;
-    --max-cell-size: 150px;
+    --cell-size: calc(80vw / 3);
+    --max-cell-size: calc(500px / 3);
     --mark-size: min(calc(var(--cell-size) * 0.9), calc(var(--max-cell-size) * 0.9));
 }
 
@@ -26,7 +26,12 @@ body {
     justify-items: center;
     align-items: center;
     grid-template-columns: repeat(3, auto);
-    margin-top: 2em;
+    background: rgba(128, 128, 128, 0.5);
+    box-shadow: 4px 4px 0 rgba(255,255,255,0.1);
+    width: calc(var(--cell-size) * 3);
+    max-width: calc(var(--max-cell-size) * 3);
+    margin: 2em auto;
+    border-radius: 1em;
 }
 
 .cell { 
@@ -34,7 +39,7 @@ body {
     height: var(--cell-size);
     max-width: var(--max-cell-size);
     max-height: var(--max-cell-size);
-    border: 1px solid black;
+    border: 3px solid #101A26;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -75,7 +80,7 @@ body {
     position: absolute;
     width: calc(var(--mark-size) * .15);
     height: var(--mark-size);
-    background-color: black;
+    background-color: rgb(166, 163, 211);
     top: 5%;
 }
 
@@ -101,12 +106,10 @@ body {
     0%, 50% {
                 right: 0;
                 height: 0;
-                background-color: lightgray;
             }
     100%    {
                 right: 43%;
                 height: var(--mark-size);
-                background-color: black;
             }
 }
 
@@ -114,12 +117,10 @@ body {
     0%      {
                 left: 0;
                 height: 0;
-                background-color: lightgray;
             }
     100%    {
                 left: 43%;
                 height: var(--mark-size);
-                background-color: black;
             }
 }
 
@@ -136,20 +137,20 @@ body {
 .board.o .cell:not(.x):not(.o):hover::before {
     width: var(--mark-size);
     height: var(--mark-size);
-    background-color: black;
+    background-color: rgb(166, 163, 211);
 }
 
 .cell.o::after,
 .board.o .cell:not(.x):not(.o):hover::after {
     width: calc(var(--mark-size) * .7);
     height: calc(var(--mark-size) * .7);
-    background-color: white;
+    background-color: #484d53;
 }
 
 .board.x .cell:not(.x):not(.o):hover::before,
 .board.x .cell:not(.x):not(.o):hover::after,
 .board.o .cell:not(.x):not(.o):hover::before {
-    background-color: lightgray;
+    background-color: #6d6f86;
 }
 
 .cell.o::before,
@@ -166,18 +167,19 @@ body {
 .winning-msg {
     display: none;
     position: absolute;
-    width: calc(var(--cell-size) * 3.2);
-    max-width: calc(var(--max-cell-size) * 3.2);
-    height: calc(var(--cell-size) * 3.2);
-    max-height: calc(var(--max-cell-size) * 3.2);
+    width: calc(var(--cell-size) * 3);
+    max-width: calc(var(--max-cell-size) * 3);
+    height: calc(var(--cell-size) * 3);
+    max-height: calc(var(--max-cell-size) * 3);
     justify-content: center;
     align-items: center;
-    background-color: rgba(255, 255, 255, 0.9);
-    color: black;
+    background-color: rgba(128, 128, 128, 0.9);
+    color: white;
     font-size: 5rem;
     font-weight: bold;
     flex-direction: column;
     text-align: center;
+    border-radius: 1rem;
 }
 
 .winning-msg.show {
@@ -195,22 +197,22 @@ body {
     to   { opacity: 0; }
 }
 
-.buttons-txt {
+#buttons-txt {
     font-size: 3rem;
+}
+
+.ttt-buttons {
+    margin: 1rem auto;
+    display: flex;
+    gap: 1rem;
 }
 
 .winning-msg button {
-    font-size: 3rem;
-    background-color: white;
-    border: 1px solid black;
-    padding: .25em .5em;
-    cursor: pointer;
-}
-
-.winning-msg button:hover {
-    background-color: black;
-    border: 1px solid white;
-    color: white;
+    padding: .5em 2em;
+    font-weight: 700;
+    background: rgba(24, 40, 59, .75);
+    border-radius: 100px;
+    margin-bottom: .5em;
 }
 
 .combo {
@@ -232,7 +234,7 @@ body {
     content: '';
     position: absolute;
     width: calc(var(--mark-size) * .1);
-    background-color: black;
+    background-color: rgba(242, 53, 104, .5);
 }
 .combo.diag1::before,
 .combo.diag2::before {
@@ -256,7 +258,8 @@ body {
 .combo.col1::before,
 .combo.col2::before,
 .combo.col3::before {
-    height: calc(var(--mark-size) * 3.4);
+    height: calc(var(--cell-size) * 2.95);
+    max-height: calc(var(--max-cell-size) * 2.95);
     animation: col-transform .4s;
 }
 
@@ -269,13 +272,14 @@ body {
 
 @keyframes col-transform {
     0%      { height: 0; }
-    100%    { height: calc(var(--mark-size) * 3.4); }
+    100%    { height: min(calc(var(--cell-size) * 2.95), calc(var(--max-cell-size) * 2.95)); }
 }
 
 .combo.row1::before,
 .combo.row2::before,
 .combo.row3::before {
-    width: calc(var(--mark-size) * 3.4);
+    width: calc(var(--cell-size) * 2.95);
+    max-width: calc(var(--max-cell-size) * 2.95);
     height: calc(var(--mark-size) * .1);
     animation: row-transform .4s;
 }
@@ -289,5 +293,5 @@ body {
 
 @keyframes row-transform {
     0%      { width: 0; }
-    100%    { width: calc(var(--mark-size) * 3.4); }
+    100%    { width: min(calc(var(--cell-size) * 2.95), calc(var(--max-cell-size) * 2.95)); }
 }

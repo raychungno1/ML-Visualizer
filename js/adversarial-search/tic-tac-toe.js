@@ -15,10 +15,10 @@ const cellElements = document.querySelectorAll('[data-cell]');
 const board = document.getElementById('board');
 const winningMsgElement = document.getElementById('winning-msg')
 const winningMsgTextElement = document.querySelector('[data-winning-msg-text]')
+const buttonsTxt = document.getElementById("buttons-txt")
 const comboElement = document.getElementById('combo')
 const xButton = document.getElementById('x-btn')
 const oButton = document.getElementById('o-btn')
-const restartButton = document.getElementById('restart-btn')
 
 let game = ["", "", "", "", "", "", "", "", ""];
 let xTurn;
@@ -168,7 +168,8 @@ function endGame(draw, combo) {
         } else {
             comboElement.classList.add("show");
             comboElement.classList.add(COMBO_NAMES[combo]);
-            winningMsgTextElement.textContent = `${xTurn ? "X's" : "O's"} Wins!`
+            winningMsgTextElement.textContent = `${xTurn ? "X" : "O"} Wins!`
+            buttonsTxt.textContent = "Play again:"
             setTimeout(() => {
                 winningMsgElement.classList.add('show');
             }, 1000);

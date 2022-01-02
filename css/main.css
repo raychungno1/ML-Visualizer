@@ -78,25 +78,11 @@ h1, h2, p {
 .alg-type__title {
     padding: 1em 0;
     background: #F23568;
-    border-radius: 0 0 2em 0;
-    width: 60%;
+    font-size: .75rem;
 }
 
 .alg-type__info {
-    width: 40%;
     padding: 1em 0;
-    padding-right: .5em;
-}
-
-.buttons {
-    margin: 1em auto;
-    border-radius: 100px;
-    background: #18283b;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
 }
 
 .alg-stat {
@@ -114,7 +100,17 @@ h1, h2, p {
 }
 
 .alg-stat h1 { font-size: 5rem }
-.stat { min-width: 175px }
+
+.buttons {
+    margin: 1em auto;
+    border-radius: 100px;
+    background: #18283b;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
 
 .chart {
     position: relative;
@@ -245,6 +241,21 @@ h1, h2, p {
     .nav__list {
         display: flex;
         padding-right: 10%;
+    }
+
+    .alg-type {
+        display: flex;
+    }
+
+    .alg-type__title {
+        font-size: 1rem;
+        border-radius: 0 0 2em 0;
+        width: 60%;
+    }
+
+    .alg-type__info {
+        width: 40%;
+        padding-right: .5em;
     }
 
     .alg-stat-row {
