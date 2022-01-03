@@ -129,7 +129,7 @@ h1, h2, p {
     font-size: 1.2rem;
 }
 
-.btn:hover { background-color: rgba(242, 53, 104, .5) }
+.btn:hover { background-color: rgba(242, 53, 104, .75) }
 
 .grid-container {
     border-radius: 1em;

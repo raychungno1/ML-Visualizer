@@ -52,6 +52,9 @@ function startGame() {
     game.fill("");
     setBoardHoverClass();
     winningMsgElement.classList.remove('show');
+    document.getElementById("depth").textContent = 0;
+    document.getElementById("positions").textContent = 0;
+    document.getElementById("wins").textContent = 0;
 }
 
 function handleClick(e) {
@@ -81,20 +84,32 @@ function aiTurn() {
     let max = -Infinity;
     let successors = getSuccessors();
     let maxIndex = successors[0];
+    let algStats = {
+        depth: 0,
+        positions: 0,
+        wins: 0
+    };
     
     successors.forEach(i => {
         game[i] = currentClass;
+        algStats.depth = 1;
+        algStats.positions++;
 
-        let val = minimax(game, false, 1);
+        let val = minimax(game, false, 1, algStats);
         if (val > max) {
             max = val;
             maxIndex = i;
         }
 
+        if (val > 0) algStats.wins++;
+
         game[i] = ""
     });
 
     placeMark(cellElements[maxIndex], currentClass);
+    document.getElementById("depth").textContent = algStats.depth;
+    document.getElementById("positions").textContent = algStats.positions;
+    document.getElementById("wins").textContent = algStats.wins;
 
     let combos = checkWin(currentClass)
     if (combos.length !== 0) {
@@ -113,8 +128,9 @@ function getSuccessors() {
     }, [])
 }
 
-function minimax(game, isMax, depth) {
+function minimax(game, isMax, depth, algStats) {
     let currentClass = xTurn ? X : O;
+    algStats.depth = Math.max(algStats.depth, depth);
     if (checkWin(currentClass).length !== 0) return (isMax ? -1 : 1) / depth;
     if (isDraw()) return 0;
     
@@ -123,11 +139,12 @@ function minimax(game, isMax, depth) {
     
     let val = isMax ? -Infinity : Infinity;
     let successors = getSuccessors();
-    
+    // console.log(successors.length);
     successors.forEach(i => {
         game[i] = currentClass;
+        algStats.positions++;
         
-        val = isMax ? Math.max(val, minimax(game, false, depth + 1)) : Math.min(val, minimax(game, true, depth + 1));
+        val = isMax ? Math.max(val, minimax(game, false, depth + 1, algStats)) : Math.min(val, minimax(game, true, depth + 1, algStats));
         
         game[i] = ""
     });

@@ -4,7 +4,7 @@
 }
 
 :root {
-    --cell-size: calc(80vw / 3);
+    --cell-size: calc(77.5vw / 3);
     --max-cell-size: calc(500px / 3);
     --mark-size: min(calc(var(--cell-size) * 0.9), calc(var(--max-cell-size) * 0.9));
 }
@@ -294,4 +294,54 @@ body {
 @keyframes row-transform {
     0%      { width: 0; }
     100%    { width: min(calc(var(--cell-size) * 2.95), calc(var(--max-cell-size) * 2.95)); }
+}
+
+.stats {
+    margin: 2em auto;
+    width: 80%;
+    max-width: 500px;
+    color: white;
+    background: rgba(128, 128, 128, 0.5);
+    box-shadow: 4px 4px 0 rgba(255,255,255,0.1);
+    border-radius: 1rem;
+    padding: 1em;
+    font-weight: bold;
+    text-align: center;
+}
+
+.stat-data {
+    font-size: 3.5rem;
+}
+
+.stat-lbl {
+    text-transform: uppercase;
+    color: rgba(242, 53, 104, .75);
+}
+
+.stat-data:not(:first-child) {
+    padding-top: .1em;
+}
+
+.stat-lbl:not(:last-child) {
+    padding-bottom: 1em;
+    border-bottom: 3px solid #101A26;
+}
+
+@media (min-width: 900px) {
+    .ttt {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .board {
+        margin: 0;
+    }
+
+    .stats {
+        margin: 0;
+        width: 20%;
+        max-width: 255px;
+        text-align: left;
+    }
 }
