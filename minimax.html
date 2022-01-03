@@ -5,8 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css" />
-    <link rel="stylesheet" href="css/adv-search.css" />
+    <link rel="stylesheet" href="css/minimax.css" />
   </head>
   <body>
 
@@ -15,9 +18,9 @@
           <a href="#" class="nav__title">AI & ML Visualizer</a>
       </div>
       <ul class="nav__list">
-          <li class="nav__item"><a href="search.html" class="nav__link">Search</a></li>
-          <li class="nav__item"><a href="adv-search.html" class="nav__link">Adversarial Search</a></li>
-          <li class="nav__item"><a href="#" class="nav__link">Contact</a></li>
+          <li class="nav__item"><a href="search.html" class="nav__link">Informed/Uninformed</a></li>
+          <li class="nav__item"><a href="minimax.html" class="nav__link">Minimax</a></li>
+          <li class="nav__item"><a href="ab-pruning.html" class="nav__link">Alpha Beta</a></li>
       </ul>
     </nav>
 
@@ -31,16 +34,16 @@
     </div>
 
     <div class="ttt">
-      <div class="board" id="board">
-        <div class="cell" data-cell></div>
-        <div class="cell" data-cell></div>
-        <div class="cell" data-cell></div>
-        <div class="cell" data-cell></div>
-        <div class="cell" data-cell></div>
-        <div class="cell" data-cell></div>
-        <div class="cell" data-cell></div>
-        <div class="cell" data-cell></div>
-        <div class="cell" data-cell></div>
+      <div class="ttt-board" id="board">
+        <div class="ttt-cell" data-cell></div>
+        <div class="ttt-cell" data-cell></div>
+        <div class="ttt-cell" data-cell></div>
+        <div class="ttt-cell" data-cell></div>
+        <div class="ttt-cell" data-cell></div>
+        <div class="ttt-cell" data-cell></div>
+        <div class="ttt-cell" data-cell></div>
+        <div class="ttt-cell" data-cell></div>
+        <div class="ttt-cell" data-cell></div>
         <div class="combo" id="combo"></div>
         <div class="winning-msg show" id="winning-msg">
           <div data-winning-msg-text></div>

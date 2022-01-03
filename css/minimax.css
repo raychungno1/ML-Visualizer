@@ -1,32 +1,17 @@
-*, *::before, *::after {
-    box-sizing: border-box;
-    font-family: 'Roboto', sans-serif;
-}
-
 :root {
     --cell-size: calc(77.5vw / 3);
     --max-cell-size: calc(500px / 3);
     --mark-size: min(calc(var(--cell-size) * 0.9), calc(var(--max-cell-size) * 0.9));
 }
 
-body {
-    margin: 0;
-}
-
-.container {
-    width: 80%;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.board {
+.ttt-board {
     display: grid;
     justify-content: center;
     align-content: center;
     justify-items: center;
     align-items: center;
     grid-template-columns: repeat(3, auto);
-    background: rgba(128, 128, 128, 0.5);
+    background: rgba(255, 255, 255, 0.4);
     box-shadow: 4px 4px 0 rgba(255,255,255,0.1);
     width: calc(var(--cell-size) * 3);
     max-width: calc(var(--max-cell-size) * 3);
@@ -34,7 +19,7 @@ body {
     border-radius: 1em;
 }
 
-.cell { 
+.ttt-cell { 
     width: var(--cell-size);
     height: var(--cell-size);
     max-width: var(--max-cell-size);
@@ -47,35 +32,35 @@ body {
     cursor: pointer;
 }
 
-.cell:first-child,
-.cell:nth-child(2),
-.cell:nth-child(3) {
+.ttt-cell:first-child,
+.ttt-cell:nth-child(2),
+.ttt-cell:nth-child(3) {
     border-top: none;
 }
 
-.cell:nth-child(3n + 1) {
+.ttt-cell:nth-child(3n + 1) {
     border-left: none;
 }
 
-.cell:nth-child(3n + 3) {
+.ttt-cell:nth-child(3n + 3) {
     border-right: none;
 }
 
-.cell:nth-child(7),
-.cell:nth-child(8),
-.cell:nth-child(9) {
+.ttt-cell:nth-child(7),
+.ttt-cell:nth-child(8),
+.ttt-cell:nth-child(9) {
     border-bottom: none;
 }
 
-.cell.x,
-.cell.o {
+.ttt-cell.x,
+.ttt-cell.o {
     cursor: not-allowed;
 }
 
-.cell.x::before,
-.cell.x::after,
-.board.x .cell:not(.x):not(.o):hover::before,
-.board.x .cell:not(.x):not(.o):hover::after {
+.ttt-cell.x::before,
+.ttt-cell.x::after,
+.ttt-board.x .ttt-cell:not(.x):not(.o):hover::before,
+.ttt-board.x .ttt-cell:not(.x):not(.o):hover::after {
     content: '';
     position: absolute;
     width: calc(var(--mark-size) * .15);
@@ -84,21 +69,21 @@ body {
     top: 5%;
 }
 
-.cell.x::before,
-.board.x .cell:not(.x):not(.o):hover::before {
+.ttt-cell.x::before,
+.ttt-board.x .ttt-cell:not(.x):not(.o):hover::before {
     transform: rotate(45deg);
 }
 
-.cell.x::after,
-.board.x .cell:not(.x):not(.o):hover::after {
+.ttt-cell.x::after,
+.ttt-board.x .ttt-cell:not(.x):not(.o):hover::after {
     transform: rotate(-45deg);
 }
 
-.cell.x::before {
+.ttt-cell.x::before {
     animation: x-before-transform .4s;
 }
 
-.cell.x::after {
+.ttt-cell.x::after {
     animation: x-after-transform .2s;
 }
 
@@ -124,37 +109,37 @@ body {
             }
 }
 
-.cell.o::before,
-.cell.o::after,
-.board.o .cell:not(.x):not(.o):hover::before,
-.board.o .cell:not(.x):not(.o):hover::after {
+.ttt-cell.o::before,
+.ttt-cell.o::after,
+.ttt-board.o .ttt-cell:not(.x):not(.o):hover::before,
+.ttt-board.o .ttt-cell:not(.x):not(.o):hover::after {
     content: '';
     position: absolute;
     border-radius: 50%;
 }
 
-.cell.o::before,
-.board.o .cell:not(.x):not(.o):hover::before {
+.ttt-cell.o::before,
+.ttt-board.o .ttt-cell:not(.x):not(.o):hover::before {
     width: var(--mark-size);
     height: var(--mark-size);
     background-color: rgb(166, 163, 211);
 }
 
-.cell.o::after,
-.board.o .cell:not(.x):not(.o):hover::after {
+.ttt-cell.o::after,
+.ttt-board.o .ttt-cell:not(.x):not(.o):hover::after {
     width: calc(var(--mark-size) * .7);
     height: calc(var(--mark-size) * .7);
-    background-color: #484d53;
+    background-color: #70767d;
 }
 
-.board.x .cell:not(.x):not(.o):hover::before,
-.board.x .cell:not(.x):not(.o):hover::after,
-.board.o .cell:not(.x):not(.o):hover::before {
+.ttt-board.x .ttt-cell:not(.x):not(.o):hover::before,
+.ttt-board.x .ttt-cell:not(.x):not(.o):hover::after,
+.ttt-board.o .ttt-cell:not(.x):not(.o):hover::before {
     background-color: #6d6f86;
 }
 
-.cell.o::before,
-.cell.o::after {
+.ttt-cell.o::before,
+.ttt-cell.o::after {
     animation: o-transform .4s;
 }
 
@@ -173,7 +158,7 @@ body {
     max-height: calc(var(--max-cell-size) * 3);
     justify-content: center;
     align-items: center;
-    background-color: rgba(128, 128, 128, 0.9);
+    background-color: rgba(112, 118, 125, .9);
     color: white;
     font-size: 5rem;
     font-weight: bold;
@@ -301,7 +286,7 @@ body {
     width: 80%;
     max-width: 500px;
     color: white;
-    background: rgba(128, 128, 128, 0.5);
+    background: #18283b;
     box-shadow: 4px 4px 0 rgba(255,255,255,0.1);
     border-radius: 1rem;
     padding: 1em;
@@ -334,7 +319,7 @@ body {
         justify-content: center;
     }
 
-    .board {
+    .ttt-board {
         margin: 0;
     }
 
