@@ -25,12 +25,11 @@ function startYGame() {
 
 function startRGame() {
     startGame();
-    game.swapTurns();
+    aiMove();
 }
 
 function startGame() {
     game = new Connect4();
-
     let combo = document.querySelector(".c4-combo");
     if (combo) innerBoard.removeChild(combo);
     winningMsgElement.classList.remove('show');
@@ -44,6 +43,13 @@ function startGame() {
         cell.removeEventListener('mouseleave', handleUnHover);
         cell.addEventListener('mouseleave', handleUnHover);
     });
+
+    // let m = [0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 4, 4, 4, 4, 3, 3, 3, 3, 6, 6, 6, 6, 5, 5, 5];
+    let m = [0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 1, 0, 3, 2, 5, 4, 2, 6, 0, 1, 4, 5, 6, 0, 1, 2]
+    m.forEach(col => {
+        game.move(col);
+        cellElements[7 * (game.empty[col] + 2) + col].classList.add(game.yTurn ? R : Y)
+    })
 }
 
 // Makes a placement if valid
@@ -63,21 +69,27 @@ function handleClick(e) {
     disableCells();
     window.addEventListener("mousemove", mouseMove);
     game.move(col); // Perform move on logical representation
-    
+
     // Runs once animation finishes
     setTimeout(() => {
         board.removeChild(circle);
-        enableCells();
 
         cellElements[(7 * row) + col].classList.add(currentClass);
         
-        window.removeEventListener("mousemove", mouseMove);
-        addHoverByMousePos(col);
-
         let combo = game.checkWin(col)
         if (combo) {
-            endGame(false, combo)
+            endGame(false, combo);
+        } else if (game.isDraw()) {
+            endGame(true);
+        } else {
+            setTimeout(() => {
+                enableCells();
+                aiMove();
+                addHoverByMousePos(col);
+                window.removeEventListener("mousemove", mouseMove);
+            }, 250);
         }
+
     }, 250);
 }
 
@@ -148,7 +160,10 @@ function endGame(draw, combo) {
     });
 
     if (draw) {
-
+        winningMsgTextElement.textContent = `Draw!`
+        buttonsTxt.textContent = "Play again:"
+        winningMsgElement.classList.add('show');
+        window.removeEventListener("mousemove", mouseMove);
     } else {
         let comboElement = createCombo(combo);
         innerBoard.insertBefore(comboElement, winningMsgElement);
@@ -156,6 +171,7 @@ function endGame(draw, combo) {
         buttonsTxt.textContent = "Play again:"
         setTimeout(() => {
             winningMsgElement.classList.add('show');
+            window.removeEventListener("mousemove", mouseMove);
         }, 1000);
     }
 }
@@ -247,4 +263,32 @@ function enableCells() {
 
 window.addEventListener("resize", function() {
     cellSize = cellElements[0].offsetHeight;
-})
+});
+
+function aiMove() {
+    // Create & animate circle
+    let col = game.bestMove();
+    let row = game.empty[col] + 1;
+    const currentClass = game.yTurn ? Y : R;
+
+    let circle = createCircle(row, col, currentClass);
+    board.insertBefore(circle, board.firstChild);
+
+    disableCells();
+    game.move(col); // Perform move on logical representation
+    
+    // Runs once animation finishes
+    setTimeout(() => {
+        board.removeChild(circle);
+        enableCells();
+
+        cellElements[(7 * row) + col].classList.add(currentClass);
+
+        let combo = game.checkWin(col)
+        if (combo) {
+            endGame(false, combo);
+        } else if (game.isDraw()) {
+            endGame(true);
+        }
+    }, 250);
+}

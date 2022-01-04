@@ -139,7 +139,7 @@ function minimax(game, isMax, depth, algStats) {
     
     let val = isMax ? -Infinity : Infinity;
     let successors = getSuccessors();
-    // console.log(successors.length);
+    
     successors.forEach(i => {
         game[i] = currentClass;
         algStats.positions++;
