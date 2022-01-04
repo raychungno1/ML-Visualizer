@@ -45,7 +45,7 @@ function startGame() {
     });
 
     // let m = [0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 4, 4, 4, 4, 3, 3, 3, 3, 6, 6, 6, 6, 5, 5, 5];
-    let m = [0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 1, 0, 3, 2, 5, 4, 2, 6, 0, 1, 4, 5, 6, 0, 1, 2]
+    let m = [0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 1, 0, 3, 2, 5, 4, 2, 6, 0, 1, 4, 5, 6, 0, 6, 3]
     m.forEach(col => {
         game.move(col);
         cellElements[7 * (game.empty[col] + 2) + col].classList.add(game.yTurn ? R : Y)

@@ -112,24 +112,24 @@ class Connect4 {
 
     bestMove() {
         let bestScore = -Infinity;
-        let transpositionTable = new Map();
-
         let successors = this.successors()
         let bestCol = successors[0];
         let count = {c: 1};
-
+        
+        let alpha = -SIZE;
+        let beta = SIZE;
         successors.forEach(col => {
             this.move(col);
             count.c++;
             
-            let score = this.negamax(col, count);
-            this.undo(col);
-            
-            console.log(`Col: ${col} Score: ${score}`)
+            let score = -this.negamax(col, alpha, beta, count);
             if (score > bestScore) {
                 bestScore = score;
                 bestCol = col;
             }
+            this.undo(col);
+            
+            console.log(`Col: ${col} Score: ${score}`)
         });
 
         console.log(count);
@@ -137,48 +137,69 @@ class Connect4 {
         return bestCol;
     }
 
-    negamax(lastCol, count) {
+    negamax(lastCol, alpha, beta, count) {
+        if (this.checkWin(lastCol)) return this.moves - SIZE;
         if (this.isDraw()) return 0;
-        if (this.checkWin(lastCol)) return (SIZE - this.moves);
 
-        let bestScore = -Infinity;
+        let max = SIZE - 1 - this.moves;
+        if (beta > max) {
+            beta = max;
+            if (alpha >= beta) return beta;
+        }
+
+        let bestScore = -SIZE;
         this.successors().forEach(col => {
             this.move(col);
-            bestScore = Math.max(bestScore, -this.negamax(col, count));
-            this.undo(col);
             count.c++;
+
+            let score = -this.negamax(col, -beta, -alpha, count);
+            this.undo(col);
+            
+            if (score > bestScore) bestScore = score;
+            if (bestScore > alpha) alpha = bestScore;
+            if (alpha >= beta) return alpha;
         });
         return bestScore;
     }
 
-    // negamax(lastCol, alpha, beta, tt, count) {
+    // negamax3(lastCol, alpha, beta, count) {
+    //     if (this.checkWin(lastCol)) return this.moves - SIZE;
     //     if (this.isDraw()) return 0;
-    //     if (this.checkWin(lastCol)) return (WIDTH * HEIGHT + 1 - this.moves) / 2;
 
-    //     // Upper bound of score
-    //     let key = this.toString();
-    //     let max = (WIDTH * HEIGHT - 1 - this.moves) / 2
-    //     let val = tt.get(key);
-    //     if (val) max = val - (WIDTH*HEIGHT + 1)/2;
-
+    //     let max = SIZE - 1 - this.moves;
     //     if (beta > max) {
     //         beta = max;
     //         if (alpha >= beta) return beta;
     //     }
 
+    //     let bestScore = -SIZE;
     //     this.successors().forEach(col => {
     //         this.move(col);
-    //         let score = -this.negamax(col, -beta, -alpha, tt, count);
-    //         this.undo(col);
-
-    //         if (score >= beta) return score;
-    //         if (score > alpha) alpha = score;
-
     //         count.c++;
-    //     });
 
-    //     tt.set(key, alpha + (WIDTH*HEIGHT - 1)/2);
-    //     return alpha;
+    //         let score = -this.negamax(col, -beta, -alpha, count);
+    //         this.undo(col);
+            
+    //         if (score > bestScore) bestScore = score;
+    //         if (score > alpha) alpha = score;
+    //         if (alpha >= beta) return alpha;
+    //     });
+    //     return bestScore;
+    // }
+
+    // negamax2(lastCol, count) {
+    //     if (this.checkWin(lastCol)) return this.moves - SIZE;
+    //     if (this.isDraw()) return 0;
+
+    //     let bestScore = -SIZE;
+    //     this.successors().forEach(col => {
+    //         this.move(col);
+    //         count.c++;
+            
+    //         bestScore = Math.max(bestScore, -this.negamax2(col, count));
+    //         this.undo(col);
+    //     });
+    //     return bestScore;
     // }
 }
 
