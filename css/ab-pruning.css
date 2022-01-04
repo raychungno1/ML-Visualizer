@@ -1,16 +1,13 @@
 :root {
-    --board-size: 80vw;
-    --max-board-size: 800px;
+    --board-size: min(80vw, 800px);
     --cell-size: calc(var(--board-size) / 7);
-    --max-cell-size: calc(var(--max-board-size) / 7);
-    --mark-size: min(calc(var(--cell-size) * 0.9), calc(var(--max-cell-size) * 0.9));
+    --mark-size: calc(var(--cell-size) * 0.9);
 }
 
 .c4 {
     background: rgba(255, 255, 255, 0.4);
     box-shadow: 4px 4px 0 rgba(255,255,255,0.1);
     width: var(--board-size);
-    max-width: var(--max-board-size);
     margin: 1rem auto;
     border-radius: 1em;
     overflow: hidden;
@@ -28,8 +25,6 @@
 .c4-cell, .circle { 
     width: var(--cell-size);
     height: var(--cell-size);
-    max-width: var(--max-cell-size);
-    max-height: var(--max-cell-size);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -46,6 +41,10 @@
     height: var(--mark-size);
 }
 
+.c4-cell:nth-child(n + 8)::after {
+    outline: calc(var(--cell-size) / 2) solid black;
+}
+
 .c4-cell.red::after, .circle.red::after {
     background-color: rgb(169, 76, 77);
     box-shadow: inset 0 0 0 5px rgba(255, 255, 255, 0.5);
@@ -54,10 +53,6 @@
 .c4-cell.yellow::after, .circle.yellow::after {
     background-color: rgb(221, 195, 93);
     box-shadow: inset 0 0 0 5px rgba(255, 255, 255, 0.5);
-}
-
-.c4-cell:nth-child(n + 8)::after {
-    outline: calc(var(--cell-size) / 2) solid black;
 }
 
 .c4-cell.red.hovering::after {
@@ -72,4 +67,48 @@
 
 .circle {
     position: absolute;
+}
+
+.c4-winning-msg {
+    display: none;
+    position: absolute;
+    width: var(--board-size);
+    height: var(--board-size);
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(112, 118, 125, .9);
+    color: white;
+    font-size: 5rem;
+    font-weight: bold;
+    flex-direction: column;
+    text-align: center;
+    border-radius: 1rem;
+}
+
+.c4-winning-msg.show {
+    display: flex;
+    animation: fadeIn linear .4s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+#buttons-txt {
+    font-size: 3rem;
+}
+
+.c4-buttons {
+    margin: 1rem auto;
+    display: flex;
+    gap: 1rem;
+}
+
+.c4-winning-msg button {
+    padding: .5em 2em;
+    font-weight: 700;
+    background: rgba(24, 40, 59, .75);
+    border-radius: 100px;
+    margin-bottom: .5em;
 }

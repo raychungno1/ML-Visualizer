@@ -1,50 +1,95 @@
-const R = "red"
-const Y = "yellow"
-const cellElements = document.querySelectorAll('[data-cell]');
-const board = document.getElementById('board');
+class Connect4 {
+    static WIDTH = 7;
+    static HEIGHT = 6;
 
-let game = ["", "", "", "", "", "", "", "", ""];
-let redTurn;
-
-redTurn = true;
-cellElements.forEach(cell => {
-    // cell.classList.remove(R);
-    // cell.classList.remove(Y);
-    // cell.removeEventListener('click', handleClick);
-    // cell.addEventListener('click', handleClick);
-    cell.removeEventListener('mouseover', handleHover);
-    cell.addEventListener('mouseover', handleHover);
-    cell.removeEventListener('mouseleave', handleUnHover);
-    cell.addEventListener('mouseleave', handleUnHover);
-});
-
-function handleHover(e) {
-    const cell = e.target;
-    const currentClass = redTurn ? R : Y;
-    let col = [...cellElements].indexOf(cell) % 7;
-    cellElements[col].classList.add(currentClass);
-
-    let row = 6;
-    while (row && (cellElements[7 * row + col].classList.contains(R) ||
-        cellElements[7 * row + col].classList.contains(Y))) {
-        row--;
+    constructor() {
+        this.yTurn = true;
+        this.board = []
+        for (let i = 0; i < Connect4.WIDTH; i++) this.board.push(Array(Connect4.HEIGHT).fill(""));
+        this.empty = Array(Connect4.WIDTH).fill(Connect4.HEIGHT - 1)
     }
-    cellElements[7 * row + col].classList.add(currentClass);
-    cellElements[7 * row + col].classList.add("hovering");
+
+    get(row, col) {
+        return this.board[col][row];
+    }
+
+    successors() {
+        return this.empty.reduce((arr, col, i) => {
+            if (col >= 0) arr.push(i);
+            return arr;
+        }, []);
+    }
+
+    isValid(col) {
+        return this.empty[col] >= 0;
+    }
+
+    move(col) {
+        let row = this.empty[col]--;
+        this.board[col][row] = (this.yTurn ? "y" : "r");
+        this.swapTurns();
+    }
+
+    undo(col) {
+        let row = ++this.empty[col];
+        this.board[col][row] = "";
+        this.swapTurns();
+    }
+
+    swapTurns() {
+        this.yTurn = !this.yTurn;
+    }
+
+    checkWin(col) {
+        let row = this.empty[col] + 1
+        let b = this.board;
+
+        if (!b[col] || !b[col][row]) return null;
+
+        // Check column
+        if (b[col][row] === b[col][row + 1] &&
+            b[col][row + 1] === b[col][row + 2] &&
+            b[col][row + 2] === b[col][row + 3]) {
+            return [[row, col], [row + 1, col], [row + 2, col], [row + 3, col]];
+        }
+
+        // Check row
+        let match = [[row, col]];
+        let i = 1
+        while (b[col - i] && (b[col - i][row] === b[col][row])) match.push([row, col - i++]);
+        i = 1;
+        while (b[col + i] && (b[col + i][row] === b[col][row])) match.push([row, col + i++]);
+        if (match.length >= 4) return match;
+
+        // Check diag 1
+        match = [[row, col]];
+        i = 1
+        while (b[col - i] && (b[col - i][row - i] === b[col][row])) match.push([row - i, col - i++]);
+        i = 1;
+        while (b[col + i] && (b[col + i][row + i] === b[col][row])) match.push([row + i, col + i++]);
+        if (match.length >= 4) return match;
+
+        // Check diag 2
+        match = [[row, col]];
+        i = 1
+        while (b[col - i] && (b[col - i][row + i] === b[col][row])) match.push([row + i, col - i++]);
+        i = 1;
+        while (b[col + i] && (b[col + i][row - i] === b[col][row])) match.push([row - i, col + i++]);
+        if (match.length >= 4) return match;
+
+        return null;
+    }
+
+    print() {
+        let out = Array(Connect4.HEIGHT).fill("");
+        this.board.forEach(col => {
+            col.forEach((cell, i) => {
+                out[i] += cell || "-";
+                if (i !== Connect4.WIDTH - 1) out[i] += " "
+            });
+        });
+        console.log(out.join("\n"));
+    }
 }
 
-function handleUnHover(e) {
-    const cell = e.target;
-    const currentClass = redTurn ? R : Y;
-    let col = [...cellElements].indexOf(cell) % 7;
-    cellElements[col].classList.remove(currentClass);
-
-    let row = 6;
-    while (row && (cellElements[7 * row + col].classList.contains(R) ||
-        cellElements[7 * row + col].classList.contains(Y)) &&
-        !cellElements[7 * row + col].classList.contains("hovering")) {
-        row--;
-    }
-    cellElements[7 * row + col].classList.remove(currentClass);
-    cellElements[7 * row + col].classList.remove("hovering");
-}
+export { Connect4 }

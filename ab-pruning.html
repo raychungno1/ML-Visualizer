@@ -33,9 +33,8 @@
     </div>
   </div>
 
-  <div class="c4">
-    <!-- <div class="circle yellow"></div> -->
-    <div class="c4-board" id="board">
+  <div class="c4" id="board">
+    <div class="c4-board" id="inner-board">
       <div class="c4-cell" data-cell></div>
       <div class="c4-cell" data-cell></div>
       <div class="c4-cell" data-cell></div>
@@ -76,7 +75,7 @@
       <div class="c4-cell" data-cell></div>
       <div class="c4-cell" data-cell></div>
       
-      <div class="c4-cell yellow" data-cell></div>
+      <div class="c4-cell" data-cell></div>
       <div class="c4-cell" data-cell></div>
       <div class="c4-cell" data-cell></div>
       <div class="c4-cell" data-cell></div>
@@ -84,25 +83,25 @@
       <div class="c4-cell" data-cell></div>
       <div class="c4-cell" data-cell></div>
       
-      <div class="c4-cell red" data-cell></div>
-      <div class="c4-cell yellow" data-cell></div>
-      <div class="c4-cell red" data-cell></div>
-      <div class="c4-cell yellow" data-cell></div>
-      <div class="c4-cell red" data-cell></div>
-      <div class="c4-cell yellow" data-cell></div>
+      <div class="c4-cell" data-cell></div>
+      <div class="c4-cell" data-cell></div>
+      <div class="c4-cell" data-cell></div>
+      <div class="c4-cell" data-cell></div>
+      <div class="c4-cell" data-cell></div>
+      <div class="c4-cell" data-cell></div>
       <div class="c4-cell" data-cell></div>
       
       <!-- <div class="combo" id="combo"></div> -->
-      <!-- <div class="winning-msg show" id="winning-msg">
+      <div class="c4-winning-msg" id="winning-msg">
         <div data-winning-msg-text></div>
         <div id="buttons-txt">Play as:</div>
-        <div class="ttt-buttons">
-          <button class="btn x" id="x-btn">X</button>
-          <button class="btn o" id="o-btn">O</button>
+        <div class="c4-buttons">
+          <button class="btn r" id="r-btn">Red</button>
+          <button class="btn y" id="y-btn">Yellow</button>
         </div>
-      </div> -->
+      </div>
     </div>
   </div>
-  <script src="js/adversarial-search/connect4.js"></script>
+  <script type="module" src="js/adversarial-search/ab-pruning.js"></script>
 </body>
 </html>
