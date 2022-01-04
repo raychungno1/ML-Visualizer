@@ -50,7 +50,10 @@ class Connect4 {
         if (b[col][row] === b[col][row + 1] &&
             b[col][row + 1] === b[col][row + 2] &&
             b[col][row + 2] === b[col][row + 3]) {
-            return [[row, col], [row + 1, col], [row + 2, col], [row + 3, col]];
+            return {
+                type: "col",
+                combo: [[row, col], [row + 1, col], [row + 2, col], [row + 3, col]]
+            };
         }
 
         // Check row
@@ -59,7 +62,7 @@ class Connect4 {
         while (b[col - i] && (b[col - i][row] === b[col][row])) match.push([row, col - i++]);
         i = 1;
         while (b[col + i] && (b[col + i][row] === b[col][row])) match.push([row, col + i++]);
-        if (match.length >= 4) return match;
+        if (match.length >= 4) return {type: "row", combo: match};
 
         // Check diag 1
         match = [[row, col]];
@@ -67,7 +70,7 @@ class Connect4 {
         while (b[col - i] && (b[col - i][row - i] === b[col][row])) match.push([row - i, col - i++]);
         i = 1;
         while (b[col + i] && (b[col + i][row + i] === b[col][row])) match.push([row + i, col + i++]);
-        if (match.length >= 4) return match;
+        if (match.length >= 4) return {type: "diag1", combo: match};
 
         // Check diag 2
         match = [[row, col]];
@@ -75,7 +78,7 @@ class Connect4 {
         while (b[col - i] && (b[col - i][row + i] === b[col][row])) match.push([row + i, col - i++]);
         i = 1;
         while (b[col + i] && (b[col + i][row - i] === b[col][row])) match.push([row - i, col + i++]);
-        if (match.length >= 4) return match;
+        if (match.length >= 4) return {type: "diag2", combo: match};
 
         return null;
     }

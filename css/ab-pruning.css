@@ -2,6 +2,7 @@
     --board-size: min(80vw, 800px);
     --cell-size: calc(var(--board-size) / 7);
     --mark-size: calc(var(--cell-size) * 0.9);
+    --mark-width: calc(var(--mark-size) * .15);
 }
 
 .c4 {
@@ -14,12 +15,14 @@
 }
 
 .c4-board {
+    position: relative;
     display: grid;
     justify-content: center;
     align-content: center;
     justify-items: center;
     align-items: center;
     grid-template-columns: repeat(7, auto);
+    overflow: hidden;
 }
 
 .c4-cell, .circle { 
@@ -42,7 +45,7 @@
 }
 
 .c4-cell:nth-child(n + 8)::after {
-    outline: calc(var(--cell-size) / 2) solid black;
+    outline: calc(var(--cell-size) / 2) solid #18283b;
 }
 
 .c4-cell.red::after, .circle.red::after {
@@ -111,4 +114,9 @@
     background: rgba(24, 40, 59, .75);
     border-radius: 100px;
     margin-bottom: .5em;
+}
+
+.c4-combo {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.9);
 }
