@@ -164,12 +164,12 @@ class Connect4 {
             this.move(col);
             count.c++;
 
-            let score = -this.negamax(col, -SIZE, SIZE, tTable, count);
-            if (score > bestScore) {
-                bestScore = score;
-                bestCol = col;
-            }
-            console.log(`Col: ${col} Score: ${score}`)
+            // let score = -this.negamax(col, -SIZE, SIZE, tTable, count);
+            // if (score > bestScore) {
+            //     bestScore = score;
+            //     bestCol = col;
+            // }
+            // console.log(`Col: ${col} Score: ${score}`)
             
             this.undo(col);
         });

@@ -1,4 +1,3 @@
-import { Connect4 } from "./connect4.js"
 import { C4 } from "./c4.js"
 
 const Y = "yellow"
@@ -45,8 +44,9 @@ function startGame() {
         cell.addEventListener('mouseleave', handleUnHover);
     });
 
-    let m = [0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 1, 0, 3, 2, 5, 4, 2, 6, 0, 1, 4, 5, 6, 0, 6, 3]
+    // let m = [0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 1, 0, 3, 2, 5, 4, 2, 6, 0, 1, 4, 5, 6, 0, 6, 3]
     // let m = [0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 1, 0, 3, 2, 5, 4, 2, 6, 0, 1, 4, 5, 6, 0]
+    let m = [0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 1, 0, 3, 2, 5, 4]
     m.forEach(col => {
         game.move(col);
         cellElements[7 * (7 - game.height[col] % 7) + col].classList.add(game.yellowTurn() ? R : Y)
@@ -85,11 +85,11 @@ function handleClick(e) {
             setTimeout(() => {
                 enableCells();
                 aiMove();
-            }, 250);
-            setTimeout(() => {
-                addHoverByMousePos(col);
                 window.removeEventListener("mousemove", mouseMove);
-            }, 500);
+                addHoverByMousePos(col);
+            }, 250);
+            // setTimeout(() => {
+            // }, 500);
         }
 
     }, 250);
