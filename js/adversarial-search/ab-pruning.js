@@ -1,4 +1,5 @@
 import { Connect4 } from "./connect4.js"
+import { C4 } from "./c4.js"
 
 const Y = "yellow"
 const R = "red"
@@ -29,7 +30,7 @@ function startRGame() {
 }
 
 function startGame() {
-    game = new Connect4();
+    game = new C4();
     let combo = document.querySelector(".c4-combo");
     if (combo) innerBoard.removeChild(combo);
     winningMsgElement.classList.remove('show');
@@ -44,17 +45,17 @@ function startGame() {
         cell.addEventListener('mouseleave', handleUnHover);
     });
 
-    // let m = [0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 4, 4, 4, 4, 3, 3, 3, 3, 6, 6, 6, 6, 5, 5, 5];
     let m = [0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 1, 0, 3, 2, 5, 4, 2, 6, 0, 1, 4, 5, 6, 0, 6, 3]
+    // let m = [0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 1, 0, 3, 2, 5, 4, 2, 6, 0, 1, 4, 5, 6, 0]
     m.forEach(col => {
         game.move(col);
-        cellElements[7 * (game.empty[col] + 2) + col].classList.add(game.yTurn ? R : Y)
+        cellElements[7 * (7 - game.height[col] % 7) + col].classList.add(game.yellowTurn() ? R : Y)
     })
 }
 
 // Makes a placement if valid
 function handleClick(e) {
-    let currentClass = game.yTurn ? Y : R;
+    const currentClass = game.yellowTurn() ? Y : R;
     let [row, col] = getCoords(e.target);
     if (!game.isValid(col)) return;
 
@@ -76,18 +77,19 @@ function handleClick(e) {
 
         cellElements[(7 * row) + col].classList.add(currentClass);
         
-        let combo = game.checkWin(col)
-        if (combo) {
-            endGame(false, combo);
+        if (game.isWin()) {
+            endGame(false, game.getCombo());
         } else if (game.isDraw()) {
             endGame(true);
         } else {
             setTimeout(() => {
                 enableCells();
                 aiMove();
+            }, 250);
+            setTimeout(() => {
                 addHoverByMousePos(col);
                 window.removeEventListener("mousemove", mouseMove);
-            }, 250);
+            }, 500);
         }
 
     }, 250);
@@ -95,7 +97,7 @@ function handleClick(e) {
 
 // Adds classes when hovering over cell
 function handleHover(e) {
-    const currentClass = game.yTurn ? Y : R;
+    const currentClass = game.yellowTurn() ? Y : R;
     let [row, col] = getCoords(e.target);
     if (!game.isValid(col)) return;
 
@@ -105,7 +107,7 @@ function handleHover(e) {
 
 // Removes classes after hovering over cell
 function handleUnHover(e) {
-    const currentClass = game.yTurn ? Y : R;
+    const currentClass = game.yellowTurn() ? Y : R;
     let [row, col] = getCoords(e.target);
 
     cellElements[col].classList.remove(currentClass);
@@ -115,7 +117,8 @@ function handleUnHover(e) {
 // Gets the location (row, col) of a cell
 function getCoords(cell) {
     let col = [...cellElements].indexOf(cell) % 7;
-    let row = game.empty[col] + 1
+    let row = 6 - (game.height[col] % 7);
+    // let row = game.empty[col] + 1
     return [row, col];
 }
 
@@ -142,8 +145,9 @@ function addHoverByMousePos(col) {
         col = Math.floor((mouseX - innerBoard.getBoundingClientRect().left) / cellSize)
     }
     if (game.isValid(col) && mouseX - cellElements[col].getBoundingClientRect().left < cellSize) {
-        const currentClass = game.yTurn ? Y : R;
-        const row = game.empty[col] + 1
+        const currentClass = game.yellowTurn() ? Y : R;
+        const row = 6 - (game.height[col] % 7);
+        // const row = game.empty[col] + 1
         cellElements[col].classList.add(currentClass);
         cellElements[(7 * row) + col].classList.add(currentClass, "hovering");
     }
@@ -155,7 +159,8 @@ function endGame(draw, combo) {
 
     disableCells();
     for (let i = 0; i < 7; i++) cellElements[i].classList.remove(currentClass);
-    game.empty.forEach((row, col) => {
+    game.height.forEach(idx => {
+        let [row, col] = game.toCoords(idx);
         cellElements[(7 * (row + 1)) + col].classList.remove("yellow", "red", "hovering");
     });
 
@@ -167,7 +172,7 @@ function endGame(draw, combo) {
     } else {
         let comboElement = createCombo(combo);
         innerBoard.insertBefore(comboElement, winningMsgElement);
-        winningMsgTextElement.textContent = `${game.yTurn ? "Red" : "Yellow"} Wins!`
+        winningMsgTextElement.textContent = `${game.yellowTurn() ? "Red" : "Yellow"} Wins!`
         buttonsTxt.textContent = "Play again:"
         setTimeout(() => {
             winningMsgElement.classList.add('show');
@@ -268,8 +273,10 @@ window.addEventListener("resize", function() {
 function aiMove() {
     // Create & animate circle
     let col = game.bestMove();
-    let row = game.empty[col] + 1;
-    const currentClass = game.yTurn ? Y : R;
+    let row = 6 - (game.height[col] % 7);
+    // let row = game.empty[col] + 1;
+    const currentClass = game.yellowTurn() ? Y : R;
+    // const currentClass = game.yTurn ? Y : R;
 
     let circle = createCircle(row, col, currentClass);
     board.insertBefore(circle, board.firstChild);
@@ -284,9 +291,8 @@ function aiMove() {
 
         cellElements[(7 * row) + col].classList.add(currentClass);
 
-        let combo = game.checkWin(col)
-        if (combo) {
-            endGame(false, combo);
+        if (game.isWin()) {
+            endGame(false, game.getCombo());
         } else if (game.isDraw()) {
             endGame(true);
         }

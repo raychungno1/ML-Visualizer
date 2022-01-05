@@ -89,6 +89,46 @@ class Connect4 {
         return null;
     }
 
+    isWin(col) {
+        let row = this.empty[col] + 1
+        let b = this.board;
+
+        if (!b[col] || !b[col][row]) return false;
+
+        // Check column
+        if (b[col][row] === b[col][row + 1] &&
+            b[col][row + 1] === b[col][row + 2] &&
+            b[col][row + 2] === b[col][row + 3]) {
+            return true;
+        }
+
+        // Check row
+        let match = 1;
+        let i = 1;
+        while (b[col - i] && (b[col - i++][row] === b[col][row])) match++;
+        i = 1;
+        while (b[col + i] && (b[col + i++][row] === b[col][row])) match++;
+        if (match >= 4) return true;
+
+        // Check diag 1
+        match = 1;
+        i = 1;
+        while (b[col - i] && (b[col - i][row - i++] === b[col][row])) match++;
+        i = 1;
+        while (b[col + i] && (b[col + i][row + i++] === b[col][row])) match++;
+        if (match >= 4) return true;
+
+        // Check diag 2
+        match = 1;
+        i = 1;
+        while (b[col - i] && (b[col - i][row + i++] === b[col][row])) match++;
+        i = 1;
+        while (b[col + i] && (b[col + i][row - i++] === b[col][row])) match++;
+        if (match >= 4) return true;
+
+        return false;
+    }
+
     print() {
         let out = Array(HEIGHT).fill("");
         this.board.forEach(col => {
@@ -112,24 +152,26 @@ class Connect4 {
 
     bestMove() {
         let bestScore = -Infinity;
-        let successors = this.successors()
+        // let successors = this.successors();
+        let successors = this.nonLosingMoves();
+        if (successors.length === 0) return this.successors()[0];
+
         let bestCol = successors[0];
         let count = {c: 1};
-        
-        let alpha = -SIZE;
-        let beta = SIZE;
+        let tTable = new Map();
+
         successors.forEach(col => {
             this.move(col);
             count.c++;
-            
-            let score = -this.negamax(col, alpha, beta, count);
+
+            let score = -this.negamax(col, -SIZE, SIZE, tTable, count);
             if (score > bestScore) {
                 bestScore = score;
                 bestCol = col;
             }
-            this.undo(col);
-            
             console.log(`Col: ${col} Score: ${score}`)
+            
+            this.undo(col);
         });
 
         console.log(count);
@@ -137,29 +179,63 @@ class Connect4 {
         return bestCol;
     }
 
-    negamax(lastCol, alpha, beta, count) {
-        if (this.checkWin(lastCol)) return this.moves - SIZE;
+    negamax(lastCol, alpha, beta, tTable, count) {
+        if (this.isWin(lastCol)) return this.moves - SIZE;
         if (this.isDraw()) return 0;
 
-        let max = SIZE - 1 - this.moves;
+        let key = this.toString();
+        let max = tTable.get(key) || (SIZE - 1 - this.moves);
         if (beta > max) {
             beta = max;
             if (alpha >= beta) return beta;
         }
 
-        let bestScore = -SIZE;
-        this.successors().forEach(col => {
+        let bestScore = this.moves - SIZE;
+        let successors = this.nonLosingMoves();
+        if (successors.length === 0) return bestScore + 2;
+        // this.successors().forEach(col => {
+        successors.forEach(col => {
             this.move(col);
             count.c++;
 
-            let score = -this.negamax(col, -beta, -alpha, count);
+            let score = -this.negamax(col, -beta, -alpha, tTable, count);
             this.undo(col);
             
             if (score > bestScore) bestScore = score;
             if (bestScore > alpha) alpha = bestScore;
             if (alpha >= beta) return alpha;
         });
+
+        tTable.set(key, bestScore);
         return bestScore;
+    }
+
+    nonLosingMoves() {
+        let possible = this.successors()
+        let nextMoveWins = []
+
+        let successors = possible.filter(col => {
+            this.move(col);
+
+            if (this.isWin(col)) {
+                this.undo(col);
+                return true;
+            }
+
+            let nonLosing = this.successors().every(move => {
+                this.move(move);
+                if (this.isWin(move)) {
+                    this.undo(move);
+                    return false;
+                }
+                this.undo(move);
+                return true;
+            });
+
+            this.undo(col);
+            return nonLosing;
+        });
+        return successors;
     }
 
     // negamax3(lastCol, alpha, beta, count) {
