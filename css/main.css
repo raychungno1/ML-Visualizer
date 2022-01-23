@@ -108,6 +108,14 @@ h1, h2, p {
 
 .btn:hover { background-color: rgba(242, 53, 104, .75) }
 
+.home-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+}
+
 @media (min-width: 650px) {
     .nav {
         display: flex;
