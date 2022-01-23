@@ -67,18 +67,25 @@ class MinHeap {
         this.size++
     }
 
-    remove() {
+    remove(e = null) {
         // If heap size is 1
         if (this.size === 1) {
             this.size--
             return this.heap.pop()
         }
 
-        let min = this.heap[0] // Save min element
-        this.heap[0] = this.heap.pop() // Move last element of array to front
+        let i = 0; // Linear search for element (oh well)
+        if (e) {
+            for (i = 0; i < this.size; i++) {
+                if (e === this.heap[i]) break;
+            }
+        }
+
+        let min = this.heap[i] // Save min element
+        this.heap[i] = this.heap.pop() // Move last element of array to front
         this.size-- // Decrement size
 
-        MinHeap.minHeapify(this.heap, 0) // Sift the copied value down
+        MinHeap.minHeapify(this.heap, i) // Sift the copied value down
         return min // Output
     }
 

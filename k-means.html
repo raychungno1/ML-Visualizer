@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/k-means.css">
+</head>
+<body>
+
+    <nav class="nav">
+        <div class="logo">
+            <a href="#" class="nav__title">AI & ML Visualizer</a>
+        </div>
+        <ul class="nav__list">
+            <li class="nav__item"><a href="search.html" class="nav__link">Informed/Uninformed</a></li>
+            <li class="nav__item"><a href="minimax.html" class="nav__link">Minimax</a></li>
+            <li class="nav__item"><a href="k-means.html" class="nav__link">K-Means</a></li>
+        </ul>
+    </nav>
+
+    <div class="alg-type">
+        <div class="alg-type__title">
+            <h1>Algorithm</h1>
+        </div>
+        <div class="alg-type__info">
+            <h1 id="alg-type">K-Means</h1>
+        </div>
+    </div>
+
+    <div class="container buttons">
+        <div class="row">
+            <button class="btn" id="reset">Reset</button>
+            <button class="btn" id="train">Train Model</button>
+        </div>
+    </div>
+
+    <div class="container canvas-container" id="canvas">
+        <canvas></canvas>
+        <div class="info">
+            <p class="">Click on the screen to add a center!</p>
+            <p class="close-btn">X</p>
+        </div>
+    </div>
+    <script type="module" src="js/k-means/k-means-app.js"></script>
+</body>
+</html>

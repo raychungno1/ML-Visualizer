@@ -109,17 +109,6 @@
 
 .alg-stat h1 { font-size: 5rem }
 
-.buttons {
-    margin: 1em auto;
-    border-radius: 100px;
-    background: #18283b;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
 .chart {
     position: relative;
     height: 200px;
