@@ -3,7 +3,8 @@ View the website [here](https://raychungno1.github.io/ML-Visualizer/).
 
 This project is aimed to visualize various AI & ML algorithms. The website is hosted [here](https://raychungno1.github.io/ML-Visualizer/), or view it by opening any of the HTML files. 
 
-###Algorithms Implemented
+### Algorithms Implemented
+
 * Uninformed Search
     * DFS
     * BFS
