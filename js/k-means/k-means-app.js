@@ -16,6 +16,7 @@ closeBtn.addEventListener("click", () => closeBtn.parentNode.remove());
 window.addEventListener("resize", function() {
     canvas.width = canvasContainer.getBoundingClientRect().width;
     canvas.height = window.innerHeight / 2;
+    colors = [];
     model = init(c);
 })
 
@@ -47,6 +48,7 @@ function canvasClick() {
 resetBtn.addEventListener("click", reset);
 
 function reset() {
+    colors = [];
     model = init(c);
 }
 
